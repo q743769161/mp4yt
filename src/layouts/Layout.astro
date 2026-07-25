@@ -8,20 +8,20 @@ interface Props {
   ogImage?: string;
   ogTitle?: string;
   canonicalUrl?: string;
-  keywords?: string;
   noindex?: boolean;
+  keywords?: string;
 }
 
 const SITE_URL = 'https://mp4yt.com';
 
 const {
-  title = 'mp4yt — YT Video Downloader | Download Any Video Instantly',
-  description = 'Free YT video downloader — download YouTube, Instagram, TikTok, Twitter and 1000+ site videos as MP4 instantly. Zero storage, zero tracking.',
+  title = 'mp4yt — Free YouTube Video Downloader | MP4 & MP3',
+  description = 'Download YouTube videos as MP4 or MP3 for free. mp4yt also supports Instagram, TikTok, Twitter/X and 1000+ platforms. No app needed — works in your browser.',
   ogImage: ogImageProp = '/og-default.png',
   ogTitle = title,
   canonicalUrl = `${SITE_URL}/`,
-  keywords = 'yt downloader, yt video downloader, download yt video, yt to mp4, yt to mp3, video downloader, online video downloader, free video downloader, download video online, best video downloader 2026, video downloader 4k, download youtube videos, download tiktok videos, download instagram reels, url to mp4 converter',
   noindex = false,
+  keywords,
 } = Astro.props;
 
 // Resolve OG image to an absolute URL for social crawlers
@@ -74,7 +74,7 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
     <!-- Primary Meta -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywords} />
+    {keywords && <meta name="keywords" content={keywords} />}
     {!noindex && <link rel="canonical" href={canonicalUrl} />}
     {!noindex && <link rel="alternate" hreflang="en" href={canonicalUrl} />}
     {!noindex && <link rel="alternate" hreflang="x-default" href={canonicalUrl} />}
@@ -117,7 +117,7 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
     </script>
 
     <!-- Robots & Indexing -->
-    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
     <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f9f9f9" media="(prefers-color-scheme: light)" />
 
@@ -126,7 +126,7 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "mp4yt",
-      "alternateName": ["YT Downloader", "YT Video Downloader", "YouTube Video Downloader", "yt downloader online"],
+      "alternateName": "YouTube Video Downloader",
       "url": "https://mp4yt.com",
       "description": description,
       "applicationCategory": "MultimediaApplication",
@@ -137,23 +137,41 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
         "price": "0",
         "priceCurrency": "USD"
       },
-      "featureList": ["Download YT videos in 4K", "Convert YT to MP3", "YT to MP4 converter", "No app installation needed", "Works on iPhone, Android, PC", "1000+ supported platforms"]
+      "featureList": [
+        "Download YouTube videos in up to 4K resolution",
+        "Convert YouTube videos to MP3 audio",
+        "Save videos as MP4 files",
+        "No app installation required",
+        "Works on iPhone, Android, PC, and Mac",
+        "Supports 1000+ video platforms"
+      ]
     })} />
 
-    <!-- Structured Data (JSON-LD) — SoftwareApplication for exact-match -->
+    <!-- Structured Data (JSON-LD) — Organization (E-E-A-T) -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "YT Video Downloader - mp4yt",
-      "alternateName": ["YT Downloader", "YouTube Downloader"],
+      "@type": "Organization",
+      "name": "mp4yt",
       "url": "https://mp4yt.com",
-      "description": "Free YT video downloader online. Download yt videos in 4K MP4 or convert to MP3. Best yt downloader 2026 — no app needed.",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+      "logo": "https://mp4yt.com/logo.png",
+      "description": "Free browser-based video downloader supporting YouTube, Instagram, TikTok, and 1000+ platforms.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "url": "https://mp4yt.com/contact-us/",
+        "contactType": "customer support"
+      }
+    })} />
+
+    <!-- Structured Data (JSON-LD) — WebSite with SearchAction -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "mp4yt",
+      "url": "https://mp4yt.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://mp4yt.com/?url={search_term_string}",
+        "query-input": "required name=search_term_string"
       }
     })} />
 
@@ -165,7 +183,7 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "YT Video Downloader",
+          "name": "mp4yt — YouTube Video Downloader",
           "item": "https://mp4yt.com"
         }
       ]

@@ -1,0 +1,131 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "mp4yt", "item": "https://mp4yt.com" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://mp4yt.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "YouTube to MP3 Guide", "item": "https://mp4yt.com/blog/youtube-to-mp3-guide/" }
+  ]
+};
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Convert YouTube to MP3 — Free & Easy Guide",
+  "description": "Convert any YouTube video to MP3 audio for free. Learn how to extract audio from YouTube on iPhone, Android, and desktop.",
+  "author": { "@type": "Organization", "name": "mp4yt" },
+  "publisher": { "@type": "Organization", "name": "mp4yt", "logo": { "@type": "ImageObject", "url": "https://mp4yt.com/logo.png" } },
+  "datePublished": "2026-07-25",
+  "dateModified": "2026-07-25",
+  "mainEntityOfPage": "https://mp4yt.com/blog/youtube-to-mp3-guide/"
+};
+---
+
+<Layout
+  title="YouTube to MP3 Converter — Free Online Guide | mp4yt"
+  description="Convert YouTube videos to MP3 for free. No app needed — extract audio from YouTube on iPhone, Android, and PC in seconds."
+  canonicalUrl="https://mp4yt.com/blog/youtube-to-mp3-guide/"
+>
+  <Navbar />
+  <main id="main-content">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+    <article class="blog-article">
+      <div class="page-container blog-container">
+        <header class="blog-header">
+          <span class="eyebrow">Guide</span>
+          <h1 class="display-lg">YouTube to MP3 — How to Extract Audio</h1>
+          <p class="body-lg blog-subtitle">
+            Convert any YouTube video to high-quality MP3 audio. Perfect for music, podcasts, lectures, and audiobooks.
+          </p>
+          <div class="blog-meta">
+            <time datetime="2026-07-25">July 25, 2026</time>
+            <span>·</span>
+            <span>4 min read</span>
+          </div>
+        </header>
+
+        <div class="blog-content">
+          <h2>When Do You Need YouTube to MP3?</h2>
+          <p>
+            Not every YouTube download needs to be a video. Sometimes you just want the audio — a podcast episode for your commute, a lecture to review while studying, a song for your workout playlist, or an ASMR track for sleep. Converting YouTube to MP3 gives you a lightweight audio file you can play anywhere, even when you're offline.
+          </p>
+
+          <h2>How to Convert YouTube to MP3 with mp4yt</h2>
+          <p>
+            mp4yt makes YouTube to MP3 conversion simple. No separate converter app, no browser extension — just your web browser:
+          </p>
+          <ol>
+            <li><strong>Copy the YouTube video URL</strong> — Find the video on YouTube and copy the link.</li>
+            <li><strong>Go to mp4yt.com</strong> — Open <a href="/">mp4yt.com</a> in your browser and paste the URL.</li>
+            <li><strong>Click Extract</strong> — Wait a few seconds for mp4yt to process the video.</li>
+            <li><strong>Select Audio (MP3)</strong> — In the quality dropdown, choose the MP3 / audio-only option.</li>
+            <li><strong>Download</strong> — Click the download button. The MP3 saves to your device instantly.</li>
+          </ol>
+
+          <h2>What Audio Quality Do You Get?</h2>
+          <p>
+            The audio quality depends on the original YouTube video. Most YouTube videos use AAC audio at 128kbps. Music videos and high-quality uploads may offer 192kbps or 256kbps. mp4yt extracts the original audio track without re-encoding, so you get the best quality available.
+          </p>
+
+          <h2>YouTube to MP3 on iPhone</h2>
+          <p>
+            On iPhone, open mp4yt.com in Safari, paste your YouTube link, and extract. When you select the MP3 option and tap Download, Safari will save the file to your Files app. From there you can import it into the Music app, voice memo apps, or any audio player.
+          </p>
+          <p>
+            <strong>Tip:</strong> On iOS 16+ you can also use the Shortcuts app to add downloaded MP3s directly to your Apple Music library.
+          </p>
+
+          <h2>YouTube to MP3 on Android</h2>
+          <p>
+            Android handles MP3 downloads seamlessly. Open mp4yt.com in Chrome, paste the YouTube URL, extract, select MP3, and download. The file goes straight to your Downloads folder. Most Android music players (Samsung Music, Google Files, VLC) will automatically detect new MP3 files.
+          </p>
+
+          <h2>Common Uses for YouTube MP3 Downloads</h2>
+          <ul>
+            <li><strong>Music</strong> — Save songs for offline playlists.</li>
+            <li><strong>Podcasts</strong> — Download episodes you can't find on podcast apps.</li>
+            <li><strong>Lectures</strong> — Study materials for university courses.</li>
+            <li><strong>Audiobooks</strong> — Free audiobooks from public domain channels.</li>
+            <li><strong>Language learning</strong> — Save pronunciation guides and lessons.</li>
+            <li><strong>ASMR & ambient sounds</strong> — Sleep sounds, nature recordings, white noise.</li>
+          </ul>
+
+          <h2>Is It Free?</h2>
+          <p>
+            Yes, mp4yt is 100% free with no download limits, no account registration, and no premium tier. Converting YouTube to MP3 costs nothing and works the same as downloading MP4 video.
+          </p>
+
+          <div class="blog-cta">
+            <a href="/" class="btn-primary">Convert YouTube to MP3 Now →</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .blog-article { background-color: var(--color-canvas); padding: var(--sp-section) var(--sp-lg) var(--sp-5xl); }
+  .blog-container { max-width: 720px; }
+  .blog-header { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-3xl); }
+  .blog-header h1 { margin: 0; color: var(--color-ink); }
+  .blog-subtitle { margin: 0; color: var(--color-body); }
+  .blog-meta { display: flex; align-items: center; gap: var(--sp-xs); font-family: var(--font-mono); font-size: 12px; color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .blog-content { display: flex; flex-direction: column; gap: var(--sp-lg); }
+  .blog-content h2 { margin: var(--sp-md) 0 0 0; color: var(--color-ink); font-family: var(--font-headline); font-size: 22px; font-weight: 800; text-transform: uppercase; }
+  .blog-content p { margin: 0; color: var(--color-body); line-height: 1.8; font-size: 16px; }
+  .blog-content ol, .blog-content ul { margin: 0; padding-left: var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-sm); color: var(--color-body); font-size: 16px; line-height: 1.8; }
+  .blog-content a { color: var(--color-ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .blog-content a:hover { background-color: var(--color-primary); color: var(--color-on-primary); text-decoration: none; padding: 1px 4px; margin: -1px -4px; }
+  .blog-cta { margin-top: var(--sp-xl); padding: var(--sp-xl); border: var(--border); text-align: center; }
+  @media (max-width: 768px) { .blog-article { padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl); } }
+  @media (max-width: 480px) { .blog-article { padding: var(--sp-3xl) var(--sp-sm) var(--sp-2xl); } .blog-content h2 { font-size: 18px; } .blog-content p, .blog-content ol, .blog-content ul { font-size: 15px; } }
+</style>

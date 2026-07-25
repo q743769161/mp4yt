@@ -1,0 +1,144 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+const posts = [
+  {
+    title: "How to Download YouTube Videos",
+    description: "Step-by-step guide to downloading YouTube videos as MP4 or MP3 on iPhone, Android, and PC.",
+    href: "/blog/how-to-download-youtube-videos/",
+    date: "July 25, 2026",
+    tag: "Guide"
+  },
+  {
+    title: "YouTube to MP3 — How to Extract Audio",
+    description: "Convert any YouTube video to high-quality MP3 audio. Perfect for music, podcasts, lectures, and audiobooks.",
+    href: "/blog/youtube-to-mp3-guide/",
+    date: "July 25, 2026",
+    tag: "Guide"
+  },
+  {
+    title: "Video Formats Explained — MP4, MKV, WebM & More",
+    description: "What's the difference between MP4, MKV, WebM, and AVI? Learn which video format to choose when downloading.",
+    href: "/blog/best-video-formats-explained/",
+    date: "July 25, 2026",
+    tag: "Guide"
+  }
+];
+---
+
+<Layout
+  title="Blog — Video Downloading Guides & Tips | mp4yt"
+  description="Guides, tips, and tutorials on downloading YouTube videos, converting to MP3, and choosing the right video format."
+  canonicalUrl="https://mp4yt.com/blog/"
+>
+  <Navbar />
+  <main id="main-content">
+    <section class="blog-index">
+      <div class="page-container blog-index-container">
+        <header class="blog-index-header">
+          <span class="eyebrow">Blog</span>
+          <h1 class="display-lg">Guides & Tips</h1>
+          <p class="body-md blog-index-subtitle">
+            Learn how to download videos, convert audio, and get the most out of mp4yt.
+          </p>
+        </header>
+
+        <div class="blog-posts-grid">
+          {posts.map(post => (
+            <a href={post.href} class="blog-post-card card">
+              <div class="blog-post-card-inner">
+                <span class="eyebrow">{post.tag}</span>
+                <h2 class="display-sm blog-post-title">{post.title}</h2>
+                <p class="body-sm blog-post-desc">{post.description}</p>
+                <div class="blog-post-meta">
+                  <time class="data-mono">{post.date}</time>
+                  <span class="blog-read-more">Read →</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .blog-index {
+    background-color: var(--color-canvas);
+    padding: var(--sp-section) var(--sp-lg) var(--sp-5xl);
+  }
+  .blog-index-container {
+    max-width: 900px;
+  }
+  .blog-index-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    margin-bottom: var(--sp-3xl);
+  }
+  .blog-index-header h1 { margin: 0; }
+  .blog-index-subtitle { margin: 0; color: var(--color-body); }
+
+  .blog-posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: var(--border);
+    background-color: var(--color-primary);
+    gap: 2px;
+  }
+  .blog-post-card {
+    display: block;
+    background-color: var(--color-canvas);
+    border: none;
+    padding: var(--sp-xl);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.1s ease;
+  }
+  .blog-post-card:hover {
+    background-color: var(--color-canvas-soft-2);
+    transform: none;
+    box-shadow: none;
+  }
+  .blog-post-card-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+  }
+  .blog-post-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+  .blog-post-desc {
+    margin: 0;
+    color: var(--color-body);
+    line-height: 1.6;
+  }
+  .blog-post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--sp-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .blog-read-more {
+    color: var(--color-ink);
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .blog-index { padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl); }
+  }
+  @media (max-width: 480px) {
+    .blog-index { padding: var(--sp-3xl) var(--sp-sm) var(--sp-2xl); }
+    .blog-post-card { padding: var(--sp-md); }
+  }
+</style>

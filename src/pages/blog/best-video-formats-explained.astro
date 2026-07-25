@@ -1,0 +1,160 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "mp4yt", "item": "https://mp4yt.com" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://mp4yt.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "Best Video Formats Explained", "item": "https://mp4yt.com/blog/best-video-formats-explained/" }
+  ]
+};
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "MP4, MKV, WebM, AVI — Video Formats Explained Simply",
+  "description": "What's the difference between MP4, MKV, WebM, and AVI? Learn which video format to choose when downloading videos online.",
+  "author": { "@type": "Organization", "name": "mp4yt" },
+  "publisher": { "@type": "Organization", "name": "mp4yt", "logo": { "@type": "ImageObject", "url": "https://mp4yt.com/logo.png" } },
+  "datePublished": "2026-07-25",
+  "dateModified": "2026-07-25",
+  "mainEntityOfPage": "https://mp4yt.com/blog/best-video-formats-explained/"
+};
+---
+
+<Layout
+  title="Video Formats Explained — MP4 vs MKV vs WebM vs AVI | mp4yt"
+  description="MP4, MKV, WebM, AVI — which video format is best? A simple guide to understanding video formats and choosing the right one for your downloads."
+  canonicalUrl="https://mp4yt.com/blog/best-video-formats-explained/"
+>
+  <Navbar />
+  <main id="main-content">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+    <article class="blog-article">
+      <div class="page-container blog-container">
+        <header class="blog-header">
+          <span class="eyebrow">Guide</span>
+          <h1 class="display-lg">Video Formats Explained — MP4, MKV, WebM & More</h1>
+          <p class="body-lg blog-subtitle">
+            Not sure which video format to choose when downloading? Here's a simple breakdown of the most common formats and when to use each one.
+          </p>
+          <div class="blog-meta">
+            <time datetime="2026-07-25">July 25, 2026</time>
+            <span>·</span>
+            <span>4 min read</span>
+          </div>
+        </header>
+
+        <div class="blog-content">
+          <h2>Why Does the Format Matter?</h2>
+          <p>
+            When you download a video online, you'll usually see options like MP4, WebM, or MKV. Each format has tradeoffs in quality, file size, and compatibility. Choosing the right format saves you from playback issues and unnecessary file bloat.
+          </p>
+
+          <h2>MP4 — The Universal Standard</h2>
+          <p>
+            MP4 (MPEG-4 Part 14) is the most widely supported video format in the world. It plays on every device and operating system — iPhones, Android phones, Windows PCs, Macs, smart TVs, and gaming consoles. It uses H.264 or H.265 video codecs and AAC audio.
+          </p>
+          <p>
+            <strong>Best for:</strong> General use. When in doubt, download as MP4. It's the default format on <a href="/">mp4yt</a> for good reason — maximum compatibility and excellent quality-to-size ratio.
+          </p>
+
+          <h2>WebM — The Web-Native Format</h2>
+          <p>
+            WebM is Google's open-source video format, designed for the web. It uses VP8/VP9 video codecs and Opus audio. WebM files are typically smaller than MP4 at the same quality, but compatibility is more limited — some older devices and apps can't play them.
+          </p>
+          <p>
+            <strong>Best for:</strong> Web embedding, sharing in chat apps, when file size matters more than universal playback.
+          </p>
+
+          <h2>MKV — The Quality Container</h2>
+          <p>
+            MKV (Matroska) is a flexible container format that can hold virtually any combination of video, audio, and subtitle tracks. It's popular with movie enthusiasts and video archivists because it preserves maximum quality and supports multiple audio tracks and subtitles in a single file.
+          </p>
+          <p>
+            <strong>Best for:</strong> Archiving, media servers (Plex, Jellyfin), when you need multiple audio/subtitle tracks.
+          </p>
+
+          <h2>AVI — The Legacy Format</h2>
+          <p>
+            AVI (Audio Video Interleave) is Microsoft's older video format from the 1990s. It still works on many devices but produces larger files than modern formats. There's rarely a reason to choose AVI over MP4 today unless you're working with very old software.
+          </p>
+          <p>
+            <strong>Best for:</strong> Compatibility with legacy Windows applications. Avoid for modern use.
+          </p>
+
+          <h2>MP3 vs AAC vs Opus — Audio Formats</h2>
+          <p>
+            When converting video to audio-only, you'll encounter these formats:
+          </p>
+          <ul>
+            <li><strong>MP3</strong> — Universal audio format. Plays everywhere. The default audio option on most video downloaders including mp4yt.</li>
+            <li><strong>AAC</strong> — Better quality than MP3 at the same bitrate. Used by YouTube, Spotify, and Apple. Great for music.</li>
+            <li><strong>Opus</strong> — Newest and most efficient format. Excellent quality at low bitrates. Widely supported in browsers but not all music apps.</li>
+          </ul>
+
+          <h2>Quick Format Comparison</h2>
+          <div class="format-table-container">
+            <table class="format-table">
+              <thead>
+                <tr>
+                  <th>Format</th>
+                  <th>Quality</th>
+                  <th>File Size</th>
+                  <th>Compatibility</th>
+                  <th>Best Use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>MP4</td><td>Excellent</td><td>Medium</td><td>Universal</td><td>Everything</td></tr>
+                <tr><td>WebM</td><td>Excellent</td><td>Small</td><td>Good</td><td>Web, sharing</td></tr>
+                <tr><td>MKV</td><td>Excellent</td><td>Large</td><td>Desktop</td><td>Archiving</td></tr>
+                <tr><td>AVI</td><td>Good</td><td>Very large</td><td>Windows</td><td>Legacy apps</td></tr>
+                <tr><td>MP3</td><td>Good</td><td>Small</td><td>Universal</td><td>Music, audio</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>TL;DR — Which Format Should You Choose?</h2>
+          <p>
+            For most people: <strong>MP4 for video, MP3 for audio</strong>. They work everywhere, offer great quality, and are the default options on mp4yt. Only choose WebM or MKV if you have a specific reason to.
+          </p>
+
+          <div class="blog-cta">
+            <a href="/" class="btn-primary">Download Videos as MP4 →</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .blog-article { background-color: var(--color-canvas); padding: var(--sp-section) var(--sp-lg) var(--sp-5xl); }
+  .blog-container { max-width: 720px; }
+  .blog-header { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-3xl); }
+  .blog-header h1 { margin: 0; color: var(--color-ink); }
+  .blog-subtitle { margin: 0; color: var(--color-body); }
+  .blog-meta { display: flex; align-items: center; gap: var(--sp-xs); font-family: var(--font-mono); font-size: 12px; color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .blog-content { display: flex; flex-direction: column; gap: var(--sp-lg); }
+  .blog-content h2 { margin: var(--sp-md) 0 0 0; color: var(--color-ink); font-family: var(--font-headline); font-size: 22px; font-weight: 800; text-transform: uppercase; }
+  .blog-content p { margin: 0; color: var(--color-body); line-height: 1.8; font-size: 16px; }
+  .blog-content ol, .blog-content ul { margin: 0; padding-left: var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-sm); color: var(--color-body); font-size: 16px; line-height: 1.8; }
+  .blog-content a { color: var(--color-ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .blog-content a:hover { background-color: var(--color-primary); color: var(--color-on-primary); text-decoration: none; padding: 1px 4px; margin: -1px -4px; }
+  .blog-cta { margin-top: var(--sp-xl); padding: var(--sp-xl); border: var(--border); text-align: center; }
+  .format-table-container { overflow-x: auto; border: var(--border); }
+  .format-table { width: 100%; border-collapse: collapse; font-size: 14px; font-family: var(--font-mono); }
+  .format-table th { background-color: var(--color-primary); color: var(--color-on-primary); text-align: left; padding: 10px 14px; font-weight: 800; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+  .format-table td { padding: 10px 14px; border-top: var(--border); color: var(--color-body); }
+  .format-table tr:hover td { background-color: var(--color-canvas-soft-2); }
+  @media (max-width: 768px) { .blog-article { padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl); } }
+  @media (max-width: 480px) { .blog-article { padding: var(--sp-3xl) var(--sp-sm) var(--sp-2xl); } .blog-content h2 { font-size: 18px; } .blog-content p, .blog-content ol, .blog-content ul { font-size: 15px; } .format-table { font-size: 12px; } .format-table th, .format-table td { padding: 8px 10px; } }
+</style>

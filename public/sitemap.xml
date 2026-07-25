@@ -1,120 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Homepage (YT Video Downloader) — highest priority -->
+  <!-- Homepage (YouTube Video Downloader) — highest priority -->
   <url>
     <loc>https://mp4yt.com/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>1.0</priority>
   </url>
 
-  <!-- YT Downloader dedicated landing page — very high priority -->
+  <!-- YouTube Downloader dedicated landing page — very high priority -->
   <url>
     <loc>https://mp4yt.com/yt-downloader/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.9</priority>
   </url>
 
   <!-- Platform-specific downloader pages — high priority -->
   <url>
     <loc>https://mp4yt.com/instagram/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/tiktok/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/facebook/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/twitter/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/reddit/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/vimeo/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/twitch/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/soundcloud/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/dailymotion/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/linkedin/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/pinterest/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.8</priority>
+  </url>
+
+  <!-- Blog posts — medium-high priority (fresh content for indexing) -->
+  <url>
+    <loc>https://mp4yt.com/blog/how-to-download-youtube-videos/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mp4yt.com/blog/youtube-to-mp3-guide/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mp4yt.com/blog/best-video-formats-explained/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <priority>0.7</priority>
   </url>
 
   <!-- Informational pages — medium priority -->
   <url>
     <loc>https://mp4yt.com/about-us/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/contact-us/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.5</priority>
   </url>
 
   <!-- Legal pages — low priority -->
   <url>
     <loc>https://mp4yt.com/privacy-policy/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/terms-and-conditions/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://mp4yt.com/dmca/</loc>
-    <lastmod>2026-07-22</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-07-25</lastmod>
     <priority>0.3</priority>
   </url>
 </urlset>

@@ -1,16 +1,10 @@
 # ──────────────────────────────────────────────────────
 #  robots.txt — mp4yt.com
 #  Controls search engine crawling for better indexing
-#
-#  NOTE: Cloudflare prepends its own managed User-agent:*
-#  block with Content-Signal directives before this file.
-#  Our rules below are additive — they EXTEND the
-#  Cloudflare-managed block, not conflict with it.
 # ──────────────────────────────────────────────────────
 
 # ═══════════════════════════════════════════════════════
-# Googlebot — explicit full access (overrides any
-# Cloudflare defaults). This is critical for indexing.
+# Googlebot — explicit full access. Critical for indexing.
 # ═══════════════════════════════════════════════════════
 User-agent: Googlebot
 Allow: /
@@ -38,22 +32,9 @@ Disallow: /watch
 # ═══════════════════════════════════════════════════════
 User-agent: *
 Allow: /
-
-# Block API/streaming endpoints (not indexable content)
 Disallow: /api/
 Disallow: /download-stream
 Disallow: /watch
-
-# Block error pages (noindex is set, but belt-and-suspenders)
-Disallow: /404
-Disallow: /500
-
-# Block 301 redirect stubs (save crawl budget — these
-# redirect to their canonical paths and waste cycles)
-Disallow: /about$
-Disallow: /privacy$
-Disallow: /terms$
-Disallow: /contact$
 
 # ═══════════════════════════════════════════════════════
 # Block AI training crawlers (protect original content)
@@ -99,21 +80,6 @@ Disallow: /
 
 User-agent: DotBot
 Disallow: /
-
-# ═══════════════════════════════════════════════════════
-# Crawl-delay for regional bots (reduce server load)
-# ═══════════════════════════════════════════════════════
-User-agent: Baiduspider
-Crawl-delay: 5
-Disallow: /api/
-Disallow: /download-stream
-Disallow: /watch
-
-User-agent: YandexBot
-Crawl-delay: 5
-Disallow: /api/
-Disallow: /download-stream
-Disallow: /watch
 
 # ═══════════════════════════════════════════════════════
 # Sitemap location (critical for crawl discovery)

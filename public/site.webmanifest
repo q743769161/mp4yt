@@ -1,6 +1,9 @@
 {
-  "name": "Mp4yt",
-  "short_name": "Mp4yt",
+  "name": "mp4yt — YouTube Video Downloader",
+  "short_name": "mp4yt",
+  "description": "Free YouTube video downloader. Download videos as MP4 or MP3 from YouTube, Instagram, TikTok and 1000+ platforms.",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +18,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
   "display": "standalone"
 }

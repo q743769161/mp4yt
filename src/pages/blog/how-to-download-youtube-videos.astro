@@ -1,0 +1,133 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "mp4yt", "item": "https://mp4yt.com" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://mp4yt.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "How to Download YouTube Videos", "item": "https://mp4yt.com/blog/how-to-download-youtube-videos/" }
+  ]
+};
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Download YouTube Videos — Complete Guide for 2026",
+  "description": "Step-by-step guide to downloading YouTube videos as MP4 or MP3 on any device. Learn the easiest methods for iPhone, Android, and PC.",
+  "author": { "@type": "Organization", "name": "mp4yt" },
+  "publisher": { "@type": "Organization", "name": "mp4yt", "logo": { "@type": "ImageObject", "url": "https://mp4yt.com/logo.png" } },
+  "datePublished": "2026-07-25",
+  "dateModified": "2026-07-25",
+  "mainEntityOfPage": "https://mp4yt.com/blog/how-to-download-youtube-videos/"
+};
+---
+
+<Layout
+  title="How to Download YouTube Videos — Step-by-Step Guide | mp4yt"
+  description="Learn how to download YouTube videos as MP4 or MP3 on iPhone, Android, and PC. Free, no app needed. Complete step-by-step guide."
+  canonicalUrl="https://mp4yt.com/blog/how-to-download-youtube-videos/"
+>
+  <Navbar />
+  <main id="main-content">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+    <article class="blog-article">
+      <div class="page-container blog-container">
+        <header class="blog-header">
+          <span class="eyebrow">Guide</span>
+          <h1 class="display-lg">How to Download YouTube Videos</h1>
+          <p class="body-lg blog-subtitle">
+            A complete step-by-step guide to saving YouTube videos as MP4 or MP3 on any device — iPhone, Android, Windows, or Mac.
+          </p>
+          <div class="blog-meta">
+            <time datetime="2026-07-25">July 25, 2026</time>
+            <span>·</span>
+            <span>5 min read</span>
+          </div>
+        </header>
+
+        <div class="blog-content">
+          <h2>Why Download YouTube Videos?</h2>
+          <p>
+            There are plenty of good reasons to save a YouTube video to your device. Maybe you want to watch a tutorial during a flight, save a lecture for studying without WiFi, or keep a music video in your personal collection. Whatever the reason, downloading YouTube videos for personal offline use is straightforward with the right tool.
+          </p>
+
+          <h2>The Easiest Way to Download YouTube Videos</h2>
+          <p>
+            The simplest method is using a browser-based video downloader like <a href="/">mp4yt</a>. No app to install, no account to create — it works right in your web browser. Here's how:
+          </p>
+
+          <ol>
+            <li><strong>Copy the YouTube URL</strong> — Open YouTube, find the video you want, and copy the link from the address bar or the Share button.</li>
+            <li><strong>Paste into mp4yt</strong> — Go to <a href="/">mp4yt.com</a> and paste the URL into the input field.</li>
+            <li><strong>Click Extract</strong> — Wait a few seconds while mp4yt fetches the available download options.</li>
+            <li><strong>Choose quality and download</strong> — Select your preferred resolution (360p to 4K) or choose MP3 for audio-only. Click Download.</li>
+          </ol>
+
+          <p>The entire process takes about 15-30 seconds.</p>
+
+          <h2>Downloading on iPhone</h2>
+          <p>
+            On iPhone, the process is the same — open mp4yt.com in Safari, paste your YouTube link, and extract. When you tap Download, Safari will show a download dialog. Tap "Download" and the file saves to your Files app. From there, you can move it to your camera roll or any folder.
+          </p>
+          <p>
+            <strong>Tip:</strong> If the video plays in the browser instead of downloading, tap and hold the download button, then select "Download Linked File."
+          </p>
+
+          <h2>Downloading on Android</h2>
+          <p>
+            Android makes downloading even easier. Open mp4yt.com in Chrome, paste your YouTube URL, extract, and tap Download. Chrome automatically saves the MP4 file to your Downloads folder. You'll see a notification when the download is complete.
+          </p>
+
+          <h2>What Quality Should I Choose?</h2>
+          <p>Here's a quick guide to choosing the right resolution:</p>
+          <ul>
+            <li><strong>360p</strong> — Smallest file size. Good for saving data or when quality doesn't matter much.</li>
+            <li><strong>720p HD</strong> — Great balance of quality and file size. Perfect for phones and tablets.</li>
+            <li><strong>1080p Full HD</strong> — Excellent quality for laptops and monitors.</li>
+            <li><strong>4K (2160p)</strong> — Maximum quality. Best for large screens and TVs. Larger file sizes.</li>
+            <li><strong>MP3 (audio only)</strong> — Just the soundtrack. Ideal for music, podcasts, and lectures.</li>
+          </ul>
+
+          <h2>Is It Safe?</h2>
+          <p>
+            mp4yt is completely web-based — there's nothing to install, no malware risk, and no personal data collected. The video downloads directly from YouTube's own CDN servers to your device. mp4yt never stores any files on its own servers.
+          </p>
+
+          <h2>Can I Download From Other Platforms?</h2>
+          <p>
+            Yes. While this guide focuses on YouTube, mp4yt supports over 1000 platforms including <a href="/instagram/">Instagram</a>, <a href="/tiktok/">TikTok</a>, <a href="/twitter/">Twitter/X</a>, <a href="/facebook/">Facebook</a>, <a href="/reddit/">Reddit</a>, and many more. The process is exactly the same — paste the URL, extract, download.
+          </p>
+
+          <div class="blog-cta">
+            <a href="/" class="btn-primary">Try mp4yt Now →</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .blog-article { background-color: var(--color-canvas); padding: var(--sp-section) var(--sp-lg) var(--sp-5xl); }
+  .blog-container { max-width: 720px; }
+  .blog-header { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-3xl); }
+  .blog-header h1 { margin: 0; color: var(--color-ink); }
+  .blog-subtitle { margin: 0; color: var(--color-body); }
+  .blog-meta { display: flex; align-items: center; gap: var(--sp-xs); font-family: var(--font-mono); font-size: 12px; color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .blog-content { display: flex; flex-direction: column; gap: var(--sp-lg); }
+  .blog-content h2 { margin: var(--sp-md) 0 0 0; color: var(--color-ink); font-family: var(--font-headline); font-size: 22px; font-weight: 800; text-transform: uppercase; }
+  .blog-content p { margin: 0; color: var(--color-body); line-height: 1.8; font-size: 16px; }
+  .blog-content ol, .blog-content ul { margin: 0; padding-left: var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-sm); color: var(--color-body); font-size: 16px; line-height: 1.8; }
+  .blog-content a { color: var(--color-ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .blog-content a:hover { background-color: var(--color-primary); color: var(--color-on-primary); text-decoration: none; padding: 1px 4px; margin: -1px -4px; }
+  .blog-cta { margin-top: var(--sp-xl); padding: var(--sp-xl); border: var(--border); text-align: center; }
+  @media (max-width: 768px) { .blog-article { padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl); } }
+  @media (max-width: 480px) { .blog-article { padding: var(--sp-3xl) var(--sp-sm) var(--sp-2xl); } .blog-content h2 { font-size: 18px; } .blog-content p, .blog-content ol, .blog-content ul { font-size: 15px; } }
+</style>
