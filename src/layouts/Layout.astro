@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
   title?: string;
@@ -186,7 +185,7 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
   </head>
   <body>
     <slot />
-    <CookieConsent />
+   
 
     <!-- GSAP + ScrollTrigger — deferred to avoid blocking first paint (~35KB gzip) -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer is:inline></script>
