@@ -31,43 +31,40 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
 <!doctype html>
 <html lang="en">
   <head>
- <meta name="hibp-verify" c ontent="dweb_q60b9bfjj2hlb 3rpdzgtawhj" />
     <!-- Preconnect to external origins for faster LCP -->
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
-    <!-- Google Consent Mode v2 Setup (must run before gtag loads) -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+ <!-- Google Consent Mode Setup -->
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
 
-      const storedConsent = localStorage.getItem('cookie-consent');
-      if (storedConsent === 'granted') {
-        gtag('consent', 'default', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      } else {
-        gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'ad_user_data': 'denied',
-          'ad_personalization': 'denied',
-          'analytics_storage': 'denied'
-        });
-      }
-    </script>
+  // Set default consent to granted so new visitors are tracked immediately
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'granted'
+  });
+</script>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LNH5RT5R2G');
-    </script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LNH5RT5R2G');
 
+  // Handle Astro client-side page views
+  document.addEventListener('astro:page-load', () => {
+    gtag('config', 'G-LNH5RT5R2G', {
+      page_path: window.location.pathname,
+    });
+  });
+</script>
+  
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
