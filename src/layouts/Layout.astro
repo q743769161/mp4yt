@@ -1,14 +1,11 @@
 ---
 import '../styles/global.css';
-<<<<<<< HEAD
 import CookieBanner from '../components/CookieBanner.astro';
 
 interface BreadcrumbItem {
   name: string;
   href: string;
 }
-=======
->>>>>>> 1ea398a87dbbcd1c87123e2f5b8353f571c85657
 
 interface Props {
   title?: string;
@@ -67,55 +64,30 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
-<<<<<<< HEAD
-   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
 
-  // Grant analytics & ad consent by default
-  gtag('consent', 'default', {
-    'ad_storage': 'granted',
-    'ad_user_data': 'granted',
-    'ad_personalization': 'granted',
-    'analytics_storage': 'granted'
-  });
+      // Grant analytics & ad consent by default
+      gtag('consent', 'default', {
+        'ad_storage': 'granted',
+        'ad_user_data': 'granted',
+        'ad_personalization': 'granted',
+        'analytics_storage': 'granted'
+      });
 
-  gtag('js', new Date());
-  gtag('config', 'G-LNH5RT5R2G');
-</script>
-=======
+      gtag('js', new Date());
+      gtag('config', 'G-LNH5RT5R2G');
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-
-  // Grant analytics & ad consent by default
-  gtag('consent', 'default', {
-    'ad_storage': 'granted',
-    'ad_user_data': 'granted',
-    'ad_personalization': 'granted',
-    'analytics_storage': 'granted'
-  });
-
-  gtag('js', new Date());
-  gtag('config', 'G-LNH5RT5R2G');
-
-  // Astro client-side navigation tracking
-  document.addEventListener('astro:page-load', () => {
-    gtag('config', 'G-LNH5RT5R2G', {
-      page_path: window.location.pathname,
-    });
-  });
-</script>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="generator" content={Astro.generator} />
->>>>>>> 1ea398a87dbbcd1c87123e2f5b8353f571c85657
+      // Astro client-side navigation tracking
+      document.addEventListener('astro:page-load', () => {
+        gtag('config', 'G-LNH5RT5R2G', {
+          page_path: window.location.pathname,
+        });
+      });
+    </script>
 
     <!-- Primary Meta -->
     <title>{title}</title>
@@ -235,10 +207,7 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
   <body>
     <a href="#main-content" class="skip-to-content">Skip to content</a>
     <slot />
-<<<<<<< HEAD
-=======
-   
->>>>>>> 1ea398a87dbbcd1c87123e2f5b8353f571c85657
+
 
     <!-- GSAP + ScrollTrigger — deferred to avoid blocking first paint (~35KB gzip) -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer is:inline></script>
