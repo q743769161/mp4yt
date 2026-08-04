@@ -1,0 +1,73 @@
+---
+// DownloaderCTA — Reusable call-to-action card linking back to the downloader
+// Used at the bottom of every article to drive tool engagement
+
+interface Props {
+  heading?: string;
+  text?: string;
+  buttonText?: string;
+  href?: string;
+}
+
+const {
+  heading = 'READY TO DOWNLOAD?',
+  text = 'Try mp4yt — paste any video URL and download as MP4 or MP3 in seconds. Free, fast, no app needed.',
+  buttonText = 'Download Now →',
+  href = '/',
+} = Astro.props;
+---
+
+<aside class="dl-cta" aria-label="Download call to action">
+  <div class="dl-cta-inner">
+    <h3 class="display-md dl-cta-heading">{heading}</h3>
+    <p class="body-md dl-cta-text">{text}</p>
+    <a href={href} class="btn-primary dl-cta-btn">{buttonText}</a>
+  </div>
+</aside>
+
+<style>
+  .dl-cta {
+    border: var(--border);
+    background-color: var(--color-canvas);
+    margin-top: var(--sp-3xl);
+    transition: background-color 0.1s ease;
+  }
+
+  .dl-cta:hover {
+    background-color: var(--color-canvas-soft-2);
+  }
+
+  .dl-cta-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-md);
+    padding: var(--sp-xl);
+  }
+
+  .dl-cta-heading {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .dl-cta-text {
+    margin: 0;
+    color: var(--color-body);
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  .dl-cta-btn {
+    margin-top: var(--sp-xs);
+  }
+
+  @media (max-width: 480px) {
+    .dl-cta-inner {
+      padding: var(--sp-md);
+    }
+    .dl-cta-text {
+      font-size: 13px;
+    }
+  }
+</style>

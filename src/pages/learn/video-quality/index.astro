@@ -1,0 +1,17 @@
+---
+import CategoryLayout from '../../../layouts/CategoryLayout.astro';
+
+const articles = [
+  { title: 'Video Resolutions Explained: 360p to 4K', href: '/learn/video-quality/resolutions-explained/', description: 'From 360p to 4K UHD — understand what each resolution means, how many pixels it has, and when to use each one.' },
+  { title: 'Understanding Video Bitrate', href: '/learn/video-quality/understanding-bitrate/', description: 'Bitrate controls file size and quality. Learn how it works, why higher isn\'t always better, and what settings to look for.' },
+];
+---
+
+<CategoryLayout
+  title="Video Quality Guide — Resolutions, Bitrate & Compression"
+  description="Learn about video resolutions (360p to 4K), bitrate, frame rate, and compression. Understand what makes downloaded video look good."
+  canonicalUrl="https://mp4yt.com/learn/video-quality/"
+  categoryName="Video Quality"
+  categoryIcon="📺"
+  articles={articles}
+/>

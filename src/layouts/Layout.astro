@@ -1,6 +1,11 @@
 ---
 import '../styles/global.css';
-import CookieConsent from '../components/CookieConsent.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+
+interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
 
 interface Props {
   title?: string;
@@ -10,6 +15,7 @@ interface Props {
   canonicalUrl?: string;
   noindex?: boolean;
   keywords?: string;
+  breadcrumbItems?: BreadcrumbItem[];
 }
 
 const SITE_URL = 'https://mp4yt.com';
@@ -22,7 +28,25 @@ const {
   canonicalUrl = `${SITE_URL}/`,
   noindex = false,
   keywords,
+  breadcrumbItems,
 } = Astro.props;
+
+// Build breadcrumb schema from items prop, falling back to homepage-only
+const breadcrumbListItems = breadcrumbItems && breadcrumbItems.length > 0
+  ? breadcrumbItems.map((item, i) => ({
+      "@type": "ListItem" as const,
+      "position": i + 1,
+      "name": item.name,
+      "item": item.href.startsWith('http') ? item.href : `${SITE_URL}${item.href}`
+    }))
+  : [
+      {
+        "@type": "ListItem" as const,
+        "position": 1,
+        "name": "mp4yt — YouTube Video Downloader",
+        "item": "https://mp4yt.com"
+      }
+    ];
 
 // Resolve OG image to an absolute URL for social crawlers
 const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogImageProp}`;
@@ -31,45 +55,32 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="google-adsense-account" content="ca-pub-7623715056779529">
+
     <!-- Preconnect to external origins for faster LCP -->
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
-    <!-- Google Consent Mode v2 Setup (must run before gtag loads) -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
 
-      const storedConsent = localStorage.getItem('cookie-consent');
-      if (storedConsent === 'granted') {
-        gtag('consent', 'default', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      } else {
-        gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'ad_user_data': 'denied',
-          'ad_personalization': 'denied',
-          'analytics_storage': 'denied'
-        });
-      }
-    </script>
+  // Grant analytics & ad consent by default
+  gtag('consent', 'default', {
+    'ad_storage': 'granted',
+    'ad_user_data': 'granted',
+    'ad_personalization': 'granted',
+    'analytics_storage': 'granted'
+  });
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LNH5RT5R2G" is:inline></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LNH5RT5R2G');
-    </script>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="generator" content={Astro.generator} />
+  gtag('js', new Date());
+  gtag('config', 'G-LNH5RT5R2G');
+</script>
 
     <!-- Primary Meta -->
     <title>{title}</title>
@@ -155,6 +166,9 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
       "url": "https://mp4yt.com",
       "logo": "https://mp4yt.com/logo.png",
       "description": "Free browser-based video downloader supporting YouTube, Instagram, TikTok, and 1000+ platforms.",
+      "sameAs": [
+        "https://github.com/nitin2122/mp4yt"
+      ],
       "contactPoint": {
         "@type": "ContactPoint",
         "url": "https://mp4yt.com/contact-us/",
@@ -179,20 +193,13 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "mp4yt — YouTube Video Downloader",
-          "item": "https://mp4yt.com"
-        }
-      ]
+      "itemListElement": breadcrumbListItems
     })} />
 
   </head>
   <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <slot />
-    <CookieConsent />
 
     <!-- GSAP + ScrollTrigger — deferred to avoid blocking first paint (~35KB gzip) -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer is:inline></script>
@@ -213,5 +220,6 @@ const ogImage = ogImageProp.startsWith('http') ? ogImageProp : `${SITE_URL}${ogI
         } catch (e) { /* silent */ }
       })();
     </script>
+    <CookieBanner />
   </body>
 </html>

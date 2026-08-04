@@ -1,0 +1,61 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Security', href: '/learn/security/' },
+  { name: 'Is Downloading Legal?', href: '/learn/security/is-downloading-legal/' },
+];
+
+const tocItems = [
+  { text: 'The Golden Rule of Copyright', slug: 'copyright-rule' },
+  { text: 'When is it Legal?', slug: 'when-legal' },
+  { text: 'Terms of Service vs The Law', slug: 'tos-vs-law' },
+  { text: 'What You Cannot Do', slug: 'cannot-do' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Safe Downloading Practices',
+    href: '/learn/guides/safe-downloading-practices/',
+    category: 'Guides',
+    description: 'Learn how to avoid malware and scams.'
+  }
+];
+---
+
+<ArticleLayout
+  title="Is it Legal to Download YouTube Videos?"
+  description="Understand the difference between Terms of Service and copyright law. Learn when it is legal to download videos and when it isn't."
+  canonicalUrl="/learn/security/is-downloading-legal/"
+  category="Security"
+  categoryHref="/learn/security/"
+  datePublished="2024-01-24T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <p><em>Disclaimer: This article is for informational purposes only and does not constitute legal advice. Laws vary significantly by jurisdiction.</em></p>
+
+  <h2 id="copyright-rule">The Golden Rule of Copyright</h2>
+  <p>The legality of downloading a video hinges almost entirely on <strong>copyright ownership</strong>. If you download a video that you do not own the rights to, without permission from the creator, you may be infringing on their copyright.</p>
+
+  <h2 id="when-legal">When is it Generally Legal?</h2>
+  <p>There are several scenarios where downloading a video is entirely legal and acceptable:</p>
+  <ul>
+    <li><strong>You own the video:</strong> You are downloading a backup of your own YouTube channel.</li>
+    <li><strong>Public Domain:</strong> The video's copyright has expired or the creator explicitly placed it in the public domain (e.g., historical archival footage).</li>
+    <li><strong>Creative Commons:</strong> The video is licensed under a Creative Commons (CC) license that permits downloading and reuse.</li>
+    <li><strong>Explicit Permission:</strong> The creator explicitly tells viewers to download the video for a specific purpose.</li>
+  </ul>
+  <p>In the United States, there is also the concept of <strong>Fair Use</strong>, which allows limited use of copyrighted material without permission for purposes such as criticism, commentary, news reporting, or teaching. However, Fair Use is a defense used in court, not a blanket right to download.</p>
+
+  <h2 id="tos-vs-law">Terms of Service vs. The Law</h2>
+  <p>There is a distinct difference between violating a website's Terms of Service (ToS) and violating the law.</p>
+  <p>Downloading a copyrighted music video to distribute it for profit is illegal (copyright infringement). However, downloading a royalty-free nature documentary just to watch it on an airplane is not illegal, but it <em>may</em> violate the platform's Terms of Service, which typically state you should only consume content via their official apps and players.</p>
+
+  <h2 id="cannot-do">What You Definitely Cannot Do</h2>
+  <p>Regardless of how you downloaded a video, you <strong>cannot</strong> upload someone else's copyrighted work to your own channel, sell it, or use it in a commercial project without purchasing a license. Doing so exposes you to copyright strikes, account termination, and potential legal action.</p>
+</ArticleLayout>

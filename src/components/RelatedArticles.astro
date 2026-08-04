@@ -1,0 +1,106 @@
+---
+// RelatedArticles — Renders 3 related article cards at the bottom of every article
+// Uses existing card and brutalist styles
+
+interface RelatedArticle {
+  title: string;
+  href: string;
+  category: string;
+  description: string;
+}
+
+interface Props {
+  articles: RelatedArticle[];
+}
+
+const { articles } = Astro.props;
+---
+
+{articles.length > 0 && (
+  <aside class="related-articles" aria-labelledby="related-heading">
+    <h2 id="related-heading" class="display-md related-heading">RELATED ARTICLES</h2>
+    <div class="related-grid">
+      {articles.map(article => (
+        <a href={article.href} class="related-card">
+          <span class="eyebrow">{article.category}</span>
+          <h3 class="display-sm related-card-title">{article.title}</h3>
+          <p class="body-sm related-card-desc">{article.description}</p>
+          <span class="related-read-more">Read →</span>
+        </a>
+      ))}
+    </div>
+  </aside>
+)}
+
+<style>
+  .related-articles {
+    margin-top: var(--sp-3xl);
+    padding-top: var(--sp-3xl);
+    border-top: var(--border);
+  }
+
+  .related-heading {
+    margin: 0 0 var(--sp-lg) 0;
+    color: var(--color-ink);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: var(--border);
+    background-color: var(--color-primary);
+    gap: 2px;
+  }
+
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+    padding: var(--sp-lg);
+    background-color: var(--color-canvas);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.1s ease;
+  }
+
+  .related-card:hover {
+    background-color: var(--color-canvas-soft-2);
+  }
+
+  .related-card-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .related-card-desc {
+    margin: 0;
+    color: var(--color-body);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .related-read-more {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: var(--sp-sm);
+  }
+
+  @media (max-width: 768px) {
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .related-card {
+      padding: var(--sp-md);
+    }
+    .related-card-desc {
+      font-size: 12px;
+    }
+  }
+</style>

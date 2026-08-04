@@ -1,0 +1,56 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Codecs', href: '/learn/codecs/' },
+  { name: 'What is AV1?', href: '/learn/codecs/what-is-av1/' },
+];
+
+const tocItems = [
+  { text: 'The Origin of AV1', slug: 'origin' },
+  { text: 'Why AV1 is a Game Changer', slug: 'game-changer' },
+  { text: 'The Hardware Decoding Problem', slug: 'hardware-problem' }
+];
+
+const relatedArticles = [
+  {
+    title: 'H.264 vs H.265',
+    href: '/learn/codecs/h264-vs-h265/',
+    category: 'Codecs',
+    description: 'Compare the current industry standards.'
+  },
+  {
+    title: 'VP9 Codec Explained',
+    href: '/learn/codecs/vp9-codec/',
+    category: 'Codecs',
+    description: 'Learn about AV1\'s immediate predecessor.'
+  }
+];
+---
+
+<ArticleLayout
+  title="What is the AV1 Codec? The Future of Video Compression"
+  description="AV1 is the next-generation, royalty-free video codec designed to replace H.265 and VP9. Learn how it achieves incredible compression."
+  canonicalUrl="/learn/codecs/what-is-av1/"
+  category="Codecs"
+  categoryHref="/learn/codecs/"
+  datePublished="2024-01-17T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="origin">The Origin of AV1</h2>
+  <p>For years, the video industry was fractured. Companies had to pay expensive licensing fees to use the <a href="/learn/codecs/h264-vs-h265/">H.264 and H.265</a> <a href="/learn/codecs/what-is-a-codec/">codecs</a>, while open-source alternatives like Google's <a href="/learn/codecs/vp9-codec/">VP9</a> were great but lacked universal hardware support.</p>
+  <p>To solve this, the <strong>Alliance for Open Media (AOMedia)</strong> was formed. This consortium includes virtually every major tech giant: Google, Apple, Microsoft, Netflix, Amazon, Intel, AMD, and Nvidia. Together, they developed <strong>AV1 (AOMedia Video 1)</strong>—a single, royalty-free standard for the future of the internet.</p>
+
+  <h2 id="game-changer">Why AV1 is a Game Changer</h2>
+  <p>AV1's primary advantage is its staggering compression efficiency. It is roughly <strong>30% more efficient than H.265</strong>. </p>
+  <p>This means streaming services like Netflix and YouTube can stream 4K video using 30% less bandwidth without any drop in visual quality. For users with slow internet connections, this is the difference between a video buffering constantly and playing smoothly.</p>
+
+  <h2 id="hardware-problem">The Hardware Decoding Problem</h2>
+  <p>The downside to AV1's incredible compression is that it is mathematically extremely complex. Decoding an AV1 video using software alone will max out a CPU and drain a laptop battery very quickly.</p>
+  <p>For AV1 to play smoothly, the device needs a dedicated hardware decoder chip. While the newest smartphones and GPUs (like Nvidia's 40-series and Apple's M3 chips) support AV1 hardware decoding, older devices do not. Until older hardware phases out, AV1 adoption will remain gradual.</p>
+</ArticleLayout>

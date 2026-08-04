@@ -1,0 +1,57 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Troubleshooting', href: '/learn/troubleshooting/' },
+  { name: 'Common Download Errors', href: '/learn/troubleshooting/common-errors/' },
+];
+
+const tocItems = [
+  { text: 'Download Stuck at 0%', slug: 'stuck-at-zero' },
+  { text: 'File Plays Without Audio', slug: 'no-audio' },
+  { text: '"Unsupported Format" Error', slug: 'unsupported-format' },
+  { text: 'Video is Blurry or Pixelated', slug: 'blurry-video' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Resolutions Explained',
+    href: '/learn/video-quality/resolutions-explained/',
+    category: 'Video Quality',
+    description: 'Understand video resolutions from 360p to 4K.'
+  }
+];
+---
+
+<ArticleLayout
+  title="Common Video Download Errors and How to Fix Them"
+  description="A guide to common video downloading errors, playback issues (like no audio), what they mean, and how to fix them quickly."
+  canonicalUrl="/learn/troubleshooting/common-errors/"
+  category="Troubleshooting"
+  categoryHref="/learn/troubleshooting/"
+  datePublished="2023-11-10T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <p>Encountering an error when trying to download a video can be frustrating. Here is a guide to the most common issues users face and exactly how to fix them.</p>
+
+  <h2 id="stuck-at-zero">1. Download Won't Start (Stuck at 0%)</h2>
+  <p><strong>The Cause:</strong> This usually happens when the source website has changed its layout or security protocols, breaking the downloader's extraction method. It can also happen if your browser is blocking third-party scripts.</p>
+  <p><strong>The Fix:</strong> First, try refreshing the page and pasting the link again. If it still fails, the video might be geo-restricted or age-restricted, which prevents downloaders from accessing it anonymously.</p>
+
+  <h2 id="no-audio">2. The Video Plays, but There is No Audio</h2>
+  <p><strong>The Cause:</strong> Platforms like YouTube often store 1080p and 4K videos in two separate streams (one video stream, one audio stream) to save bandwidth. If the downloader doesn't properly "mux" (merge) these two streams together, you end up with a silent video.</p>
+  <p><strong>The Fix:</strong> Try downloading a 720p version instead. 720p files are almost always stored with the audio already merged. Alternatively, use a service like mp4yt that handles audio/video muxing on the server-side automatically.</p>
+
+  <h2 id="unsupported-format">3. "Unsupported Format" When Trying to Play</h2>
+  <p><strong>The Cause:</strong> You downloaded a file format (like MKV or WebM) or a codec (like H.265) that your device's built-in media player doesn't understand.</p>
+  <p><strong>The Fix:</strong> The easiest solution is to download the free <strong>VLC Media Player</strong>, which can play virtually any file format in existence. If you must use your default player, try downloading the video again, specifically selecting the MP4 format.</p>
+
+  <h2 id="blurry-video">4. The Video is Blurry or Pixelated</h2>
+  <p><strong>The Cause:</strong> You likely downloaded the lowest quality version of the video by default, or the original video itself is low quality.</p>
+  <p><strong>The Fix:</strong> Before clicking download, ensure you have selected a high resolution (720p or 1080p) from the quality dropdown menu. Remember, a downloader cannot magically make a 480p source video look like 4K; it can only extract the quality that was uploaded.</p>
+</ArticleLayout>

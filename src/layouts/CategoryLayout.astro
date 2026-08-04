@@ -1,0 +1,183 @@
+---
+// CategoryLayout — Reusable layout for /learn/ category index pages
+import Layout from './Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+interface Article {
+  title: string;
+  href: string;
+  description: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  categoryName: string;
+  categoryIcon: string;
+  articles: Article[];
+}
+
+const { title, description, canonicalUrl, categoryName, categoryIcon, articles } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: categoryName, href: canonicalUrl },
+];
+---
+
+<Layout
+  title={`${title} | mp4yt`}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  breadcrumbItems={breadcrumbs}
+>
+  <Navbar />
+  <main id="main-content">
+    <section class="cat-hero">
+      <div class="page-container cat-hero-content">
+        <Breadcrumbs items={breadcrumbs} />
+        <div class="cat-hero-title-row">
+          <span class="cat-hero-icon" aria-hidden="true">{categoryIcon}</span>
+          <h1 class="display-xl cat-hero-title">{categoryName}</h1>
+        </div>
+        <p class="body-lg cat-hero-subtitle">{description}</p>
+      </div>
+    </section>
+
+    <section class="cat-articles">
+      <div class="page-container">
+        <div class="cat-articles-grid">
+          {articles.map(article => (
+            <a href={article.href} class="cat-article-card">
+              <h2 class="display-sm cat-article-title">{article.title}</h2>
+              <p class="body-sm cat-article-desc">{article.description}</p>
+              <span class="cat-article-read">Read →</span>
+            </a>
+          ))}
+        </div>
+
+        <div class="cat-cta">
+          <a href="/" class="btn-primary">Download a Video →</a>
+          <a href="/learn/" class="btn-secondary">← Back to All Topics</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .cat-hero {
+    background-color: var(--color-canvas);
+    padding: var(--sp-section) var(--sp-lg) var(--sp-3xl);
+    border-bottom: var(--border);
+  }
+
+  .cat-hero-content {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+  }
+
+  .cat-hero-title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-md);
+  }
+
+  .cat-hero-icon {
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-canvas-soft-2);
+    border: var(--border);
+    flex-shrink: 0;
+  }
+
+  .cat-hero-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .cat-hero-subtitle {
+    margin: 0;
+    color: var(--color-body);
+    max-width: 600px;
+  }
+
+  .cat-articles {
+    background-color: var(--color-canvas);
+    padding: var(--sp-4xl) var(--sp-lg) var(--sp-5xl);
+  }
+
+  .cat-articles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: var(--border);
+    background-color: var(--color-primary);
+    gap: 2px;
+  }
+
+  .cat-article-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+    padding: var(--sp-xl);
+    background-color: var(--color-canvas);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.1s ease;
+  }
+
+  .cat-article-card:hover {
+    background-color: var(--color-canvas-soft-2);
+  }
+
+  .cat-article-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .cat-article-desc {
+    margin: 0;
+    color: var(--color-body);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .cat-article-read {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: var(--sp-sm);
+  }
+
+  .cat-cta {
+    display: flex;
+    gap: var(--sp-sm);
+    margin-top: var(--sp-xl);
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .cat-hero { padding: var(--sp-4xl) var(--sp-md) var(--sp-xl); }
+    .cat-articles { padding: var(--sp-3xl) var(--sp-md); }
+  }
+
+  @media (max-width: 480px) {
+    .cat-hero { padding: var(--sp-3xl) var(--sp-sm) var(--sp-lg); }
+    .cat-articles { padding: var(--sp-xl) var(--sp-sm); }
+    .cat-article-card { padding: var(--sp-md); }
+  }
+</style>

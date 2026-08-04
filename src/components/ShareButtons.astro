@@ -1,0 +1,110 @@
+---
+// ShareButtons.astro
+---
+
+<div class="share-container">
+  <span class="share-label">Share this article:</span>
+  <div class="share-actions">
+    <!-- Native Web Share API Button (Mobile First) -->
+    <button id="native-share-btn" class="share-btn share-native" aria-label="Share">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+      Share
+    </button>
+    
+    <!-- Copy Link Button -->
+    <button id="copy-link-btn" class="share-btn share-copy" aria-label="Copy Link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      Copy Link
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const nativeShareBtn = document.getElementById('native-share-btn');
+    const copyLinkBtn = document.getElementById('copy-link-btn');
+    const url = window.location.href;
+    const title = document.title;
+
+    // Web Share API
+    if (navigator.share) {
+      nativeShareBtn.style.display = 'flex';
+      nativeShareBtn.addEventListener('click', async () => {
+        try {
+          await navigator.share({
+            title: title,
+            url: url
+          });
+        } catch (err) {
+          console.log('Error sharing:', err);
+        }
+      });
+    } else {
+      nativeShareBtn.style.display = 'none';
+    }
+
+    // Copy to clipboard
+    if (copyLinkBtn) {
+      copyLinkBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          const originalText = copyLinkBtn.innerHTML;
+          copyLinkBtn.innerHTML = "Copied!";
+          setTimeout(() => {
+            copyLinkBtn.innerHTML = originalText;
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy', err);
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .share-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+    margin-top: var(--sp-2xl);
+    padding-top: var(--sp-lg);
+    border-top: var(--border);
+  }
+
+  .share-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .share-actions {
+    display: flex;
+    gap: var(--sp-sm);
+    flex-wrap: wrap;
+  }
+
+  .share-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-xs);
+    padding: var(--sp-xs) var(--sp-sm);
+    background: transparent;
+    border: var(--border);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .share-btn:hover {
+    background-color: var(--color-ink);
+    color: var(--color-canvas);
+  }
+
+  .share-btn svg {
+    flex-shrink: 0;
+  }
+</style>

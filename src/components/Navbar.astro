@@ -15,8 +15,18 @@
     <!-- Desktop Navigation Links -->
     <ul class="navbar-links" role="list">
       <li><a href="/yt-downloader/" class="nav-link">YT Downloader</a></li>
+      <li class="nav-dropdown-wrap">
+        <a href="/learn/" class="nav-link nav-link-dropdown">Learn <svg class="nav-dropdown-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-dropdown" role="menu">
+          <a href="/learn/video-formats/" class="nav-dropdown-link" role="menuitem">Video Formats</a>
+          <a href="/learn/video-quality/" class="nav-dropdown-link" role="menuitem">Video Quality</a>
+          <a href="/learn/audio/" class="nav-dropdown-link" role="menuitem">Audio</a>
+          <a href="/learn/codecs/" class="nav-dropdown-link" role="menuitem">Codecs</a>
+          <a href="/learn/guides/" class="nav-dropdown-link" role="menuitem">Guides</a>
+          <a href="/learn/" class="nav-dropdown-link nav-dropdown-link-all" role="menuitem">All Topics →</a>
+        </div>
+      </li>
       <li><a href="/#features" class="nav-link">Features</a></li>
-      <li><a href="/#how-it-works" class="nav-link">How it works</a></li>
       <li><a href="/#platforms" class="nav-link">Platforms</a></li>
       <li><a href="/blog/" class="nav-link">Blog</a></li>
       <li><a href="/about-us/" class="nav-link">About Us</a></li>
@@ -65,8 +75,8 @@
   <div class="mobile-nav-strip" aria-label="Quick navigation">
     <div class="mobile-nav-strip-track">
       <a href="/yt-downloader/" class="mobile-strip-link">YT Downloader</a>
+      <a href="/learn/" class="mobile-strip-link">Learn</a>
       <a href="/#features" class="mobile-strip-link">Features</a>
-      <a href="/#how-it-works" class="mobile-strip-link">How it works</a>
       <a href="/#platforms" class="mobile-strip-link">Platforms</a>
       <a href="/blog/" class="mobile-strip-link">Blog</a>
       <a href="/about-us/" class="mobile-strip-link">About Us</a>
@@ -80,8 +90,8 @@
   <div class="mobile-overlay-inner">
     <ul class="mobile-links" role="list">
       <li><a href="/yt-downloader/" class="mobile-link">YT Downloader</a></li>
+      <li><a href="/learn/" class="mobile-link">Learn</a></li>
       <li><a href="/#features" class="mobile-link">Features</a></li>
-      <li><a href="/#how-it-works" class="mobile-link">How it works</a></li>
       <li><a href="/#platforms" class="mobile-link">Platforms</a></li>
       <li><a href="/blog/" class="mobile-link">Blog</a></li>
       <li><a href="/about-us/" class="mobile-link">About Us</a></li>
@@ -109,12 +119,20 @@
   .navbar {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 999;
+    border-bottom: 1px solid var(--color-hairline);
+    height: 64px;
+    overflow: visible;
+  }
+
+  .navbar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background-color: color-mix(in srgb, var(--color-canvas) 85%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-hairline);
-    height: 64px;
   }
 
   /* ── Mobile Nav Strip (hidden on desktop) ── */
@@ -179,6 +197,67 @@
   .nav-link:hover {
     background-color: var(--color-canvas-soft-2);
     color: var(--color-ink);
+  }
+
+  /* ── Learn Dropdown ── */
+  .nav-dropdown-wrap {
+    position: relative;
+  }
+
+  .nav-link-dropdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-dropdown-chevron {
+    transition: transform 0.15s ease;
+  }
+
+  .nav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 180px;
+    background-color: var(--color-canvas);
+    border: var(--border);
+    padding: var(--sp-xxs) 0;
+    z-index: 110;
+    flex-direction: column;
+  }
+
+  .nav-dropdown-wrap:hover .nav-dropdown,
+  .nav-dropdown-wrap:focus-within .nav-dropdown {
+    display: flex;
+  }
+
+  .nav-dropdown-wrap:hover .nav-dropdown-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-body);
+    text-decoration: none;
+    padding: var(--sp-xs) var(--sp-md);
+    transition: background-color 0.1s ease, color 0.1s ease;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown-link:hover {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .nav-dropdown-link-all {
+    border-top: var(--border-thin);
+    font-weight: 700;
+    margin-top: var(--sp-xxs);
+    padding-top: var(--sp-sm);
   }
 
   .navbar-cta {
@@ -337,6 +416,8 @@
     /* Reduce expensive blur on mobile for performance */
     .navbar {
       height: auto;
+    }
+    .navbar::before {
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
     }

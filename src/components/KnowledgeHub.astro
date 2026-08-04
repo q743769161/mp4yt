@@ -1,0 +1,219 @@
+---
+// KnowledgeHub — Homepage section showcasing knowledge categories
+// Drives internal links to educational content without disrupting downloader UX
+
+const categories = [
+  {
+    icon: '🎬',
+    title: 'Video Formats',
+    desc: 'MP4, WebM, MKV, AVI, MOV — learn the differences and choose the right format.',
+    href: '/learn/video-formats/',
+    tag: '6 GUIDES'
+  },
+  {
+    icon: '📺',
+    title: 'Video Quality',
+    desc: 'Resolutions, bitrate, frame rate, compression — understand what makes video look good.',
+    href: '/learn/video-quality/',
+    tag: '5 GUIDES'
+  },
+  {
+    icon: '🎵',
+    title: 'Audio Formats',
+    desc: 'MP3, AAC, FLAC, Opus — pick the right audio format for music, podcasts, and more.',
+    href: '/learn/audio/',
+    tag: '4 GUIDES'
+  },
+  {
+    icon: '⚙️',
+    title: 'Codecs',
+    desc: 'H.264, H.265, VP9, AV1 — the engines behind video encoding and decoding.',
+    href: '/learn/codecs/',
+    tag: '4 GUIDES'
+  },
+  {
+    icon: '📱',
+    title: 'Compatibility',
+    desc: 'Which formats work on which devices and browsers. No more playback issues.',
+    href: '/learn/compatibility/',
+    tag: '3 GUIDES'
+  },
+  {
+    icon: '📖',
+    title: 'Guides',
+    desc: 'Best practices for downloading, choosing formats, optimizing speed, and more.',
+    href: '/learn/guides/',
+    tag: '4 GUIDES'
+  },
+  {
+    icon: '🔧',
+    title: 'Troubleshooting',
+    desc: 'Common errors, playback issues, failed downloads — find solutions fast.',
+    href: '/learn/troubleshooting/',
+    tag: '3 GUIDES'
+  },
+  {
+    icon: '🔒',
+    title: 'Security',
+    desc: 'Safe downloading practices, privacy information, and avoiding malware.',
+    href: '/learn/security/',
+    tag: '2 GUIDES'
+  },
+];
+---
+
+<section id="knowledge-hub" class="hub-band" aria-labelledby="hub-headline">
+  <div class="page-container hub-inner">
+    <div class="hub-header">
+      <span class="eyebrow">VIDEO KNOWLEDGE HUB</span>
+      <h2 id="hub-headline" class="display-lg hub-title">
+        LEARN EVERYTHING ABOUT VIDEO.
+      </h2>
+      <p class="body-md hub-subtitle">
+        Formats, codecs, quality, compatibility — expert guides to help you make
+        informed decisions about video and audio downloads.
+      </p>
+      <a href="/learn/" class="btn-secondary hub-browse-btn">Browse All Topics →</a>
+    </div>
+
+    <div class="hub-grid">
+      {categories.map(cat => (
+        <a href={cat.href} class="hub-card">
+          <div class="hub-card-icon" aria-hidden="true">{cat.icon}</div>
+          <div class="hub-card-body">
+            <h3 class="display-sm hub-card-title">{cat.title}</h3>
+            <p class="body-sm hub-card-desc">{cat.desc}</p>
+          </div>
+          <span class="hub-card-tag">{cat.tag}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hub-band {
+    background-color: var(--color-canvas);
+    padding: var(--sp-5xl) var(--sp-lg);
+    border-top: var(--border);
+  }
+
+  .hub-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3xl);
+  }
+
+  .hub-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-sm);
+  }
+
+  .hub-title {
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .hub-subtitle {
+    margin: 0;
+    max-width: 540px;
+    color: var(--color-body);
+  }
+
+  .hub-browse-btn {
+    margin-top: var(--sp-sm);
+  }
+
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: var(--border);
+    background-color: var(--color-primary);
+    gap: 2px;
+  }
+
+  .hub-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    padding: var(--sp-lg);
+    background-color: var(--color-canvas);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.1s ease;
+  }
+
+  .hub-card:hover {
+    background-color: var(--color-canvas-soft-2);
+  }
+
+  .hub-card-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-canvas-soft-2);
+    border: var(--border);
+  }
+
+  .hub-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xxs);
+    flex: 1;
+  }
+
+  .hub-card-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .hub-card-desc {
+    margin: 0;
+    color: var(--color-body);
+    line-height: 1.5;
+  }
+
+  .hub-card-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+    margin-top: auto;
+    padding-top: var(--sp-sm);
+  }
+
+  @media (max-width: 960px) {
+    .hub-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hub-band {
+      padding: var(--sp-4xl) var(--sp-md);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hub-band {
+      padding: var(--sp-3xl) var(--sp-sm);
+    }
+    .hub-grid {
+      grid-template-columns: 1fr;
+    }
+    .hub-card {
+      padding: var(--sp-md);
+    }
+    .hub-card-desc {
+      font-size: 12px;
+    }
+  }
+</style>

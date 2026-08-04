@@ -663,5 +663,27 @@ details.faq-item[open] .faq-icon {
   will-change: transform, opacity;
 }
 
+/* ─── Skip to Content (a11y) ─── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 999;
+  padding: var(--sp-sm) var(--sp-lg);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: var(--border);
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
 /* ─── Hidden utility ─── */
 .hidden { display: none !important; }

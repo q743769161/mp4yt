@@ -29,6 +29,27 @@ import Footer from '../components/Footer.astro';
     <section class="about-body">
       <div class="page-container about-container">
 
+        <!-- Mission -->
+        <div class="about-section">
+          <div class="about-section-header">
+            <div class="section-icon section-icon-blue" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3v3M10 14v3M3 10h3M14 10h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <h2 class="display-md">Our Mission & Knowledge Hub</h2>
+          </div>
+          <div class="about-text-block">
+            <p class="body-md">
+              mp4yt started with a simple goal: make downloading video and audio as fast, private, and frictionless as possible. However, as the digital media landscape has grown more complex with new formats, codecs, and resolutions, we realized users needed more than just a tool.
+            </p>
+            <p class="body-md">
+              That's why we created the <strong>mp4yt Knowledge Hub</strong> — a comprehensive resource to educate users about video formats, audio codecs, compression, and safe downloading practices. Our content is written by technical experts and adheres to a strict <a href="/editorial-policy/">Editorial Policy</a>.
+            </p>
+          </div>
+        </div>
+
         <!-- How It Works -->
         <div class="about-section">
           <div class="about-section-header">
@@ -250,6 +271,34 @@ import Footer from '../components/Footer.astro';
     :root:not([data-theme="light"]) .section-icon-blue   { background-color: rgba(29, 78, 216, 0.2); color: #60a5fa; }
     :root:not([data-theme="light"]) .section-icon-violet  { background-color: rgba(124, 58, 237, 0.2); color: #a78bfa; }
     :root:not([data-theme="light"]) .section-icon-green   { background-color: rgba(22, 163, 74, 0.2); color: #4ade80; }
+  }
+
+  .about-text-block {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+  }
+
+  .about-text-block p {
+    color: var(--color-body);
+    line-height: 1.6;
+  }
+
+  .about-text-block a {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .about-text-block a:hover {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    text-decoration: none;
+    padding: 1px 4px;
+    margin: -1px -4px;
   }
 
   /* Cards grid */

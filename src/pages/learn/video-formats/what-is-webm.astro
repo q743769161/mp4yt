@@ -1,0 +1,59 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Formats', href: '/learn/video-formats/' },
+  { name: 'What is WebM?', href: '/learn/video-formats/what-is-webm/' },
+];
+
+const tocItems = [
+  { text: 'Introduction to WebM', slug: 'introduction' },
+  { text: 'Open-Source and Royalty-Free', slug: 'open-source' },
+  { text: 'WebM Codecs: VP8 and VP9', slug: 'codecs' },
+  { text: 'When to Use WebM', slug: 'when-to-use' }
+];
+
+const relatedArticles = [
+  {
+    title: 'MP4 vs WebM',
+    href: '/learn/video-formats/mp4-vs-webm/',
+    category: 'Video Formats',
+    description: 'Compare the two most popular web formats.'
+  }
+];
+---
+
+<ArticleLayout
+  title="What is WebM? The Web-Optimized Video Format"
+  description="Learn about the WebM container, why Google created it, and why it is rapidly becoming the standard format for HTML5 web video."
+  canonicalUrl="/learn/video-formats/what-is-webm/"
+  category="Video Formats"
+  categoryHref="/learn/video-formats/"
+  datePublished="2024-01-12T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="introduction">Introduction to WebM</h2>
+  <p>WebM is an audiovisual media file format primarily designed for use in HTML5 web video. First announced by Google in 2010, the project's goal was simple: to build a high-quality, open standard for internet video that anyone could use without paying licensing fees.</p>
+
+  <h2 id="open-source">Open-Source and Royalty-Free</h2>
+  <p>One of the biggest problems with the MP4 format (and the H.264 codec inside it) is that it is patented. Hardware manufacturers and software developers have to pay licensing fees to a patent pool (MPEG LA) to legally use the technology.</p>
+  <p>Google created WebM to solve this. It is 100% open-source and royalty-free. Because of this, it is deeply integrated into all modern web browsers (like Chrome, Edge, and Firefox) and is heavily used by YouTube to serve billions of videos efficiently.</p>
+
+  <h2 id="codecs">WebM Codecs: VP8, VP9, and AV1</h2>
+  <p>Like MP4, WebM is just a container. The real magic happens with the codecs it holds. WebM files primarily use Google's open-source video codecs:</p>
+  <ul>
+    <li><strong>VP8:</strong> The original codec for WebM, designed as a direct competitor to H.264.</li>
+    <li><strong>VP9:</strong> The modern standard for WebM. It is significantly more efficient than H.264, delivering 1080p and 4K video at nearly half the file size.</li>
+    <li><strong>AV1:</strong> The newest codec, developed by an alliance of tech giants (including Google, Netflix, and Amazon). It offers unparalleled compression but requires modern hardware to decode.</li>
+  </ul>
+  <p>For audio, WebM pairs these video streams with the open-source <strong>Vorbis</strong> or <strong>Opus</strong> audio codecs, which offer excellent sound quality.</p>
+
+  <h2 id="when-to-use">When to Use WebM</h2>
+  <p>If you are downloading a video specifically to upload it to a website, blog, or a platform like Discord, WebM (especially with the VP9 codec) is often the best choice due to its superior compression and smaller file size.</p>
+  <p>However, if you plan to edit the video in older software or play it on a legacy device (like an older Smart TV), you may want to stick to MP4, as WebM hardware decoding is less ubiquitous on older chips.</p>
+</ArticleLayout>

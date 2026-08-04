@@ -1,0 +1,65 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Formats', href: '/learn/video-formats/' },
+  { name: 'MOV vs MP4', href: '/learn/video-formats/mov-vs-mp4/' },
+];
+
+const tocItems = [
+  { text: 'Introduction', slug: 'introduction' },
+  { text: 'What is MOV?', slug: 'what-is-mov' },
+  { text: 'Feature Comparison', slug: 'comparison' },
+  { text: 'Which Should You Choose?', slug: 'which-to-choose' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What Is MP4?',
+    href: '/learn/video-formats/what-is-mp4/',
+    category: 'Video Formats',
+    description: 'A comprehensive guide to the MP4 container format.'
+  }
+];
+---
+
+<ArticleLayout
+  title="MOV vs MP4: What's the Difference?"
+  description="Compare Apple's proprietary MOV format with the universal MP4 standard. Find out which video format you should download and use."
+  canonicalUrl="/learn/video-formats/mov-vs-mp4/"
+  category="Video Formats"
+  categoryHref="/learn/video-formats/"
+  datePublished="2024-01-11T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="introduction">Introduction</h2>
+  <p>If you've ever exported a video from an iPhone or a Mac, you've likely encountered a `.mov` file. But how does it compare to the ubiquitous `.mp4`? The truth is, they are closer cousins than you might think.</p>
+
+  <h2 id="what-is-mov">What is MOV?</h2>
+  <p>MOV is a proprietary video container format developed by Apple in 1998 for its QuickTime framework. It was designed to hold high-quality video, audio, and text tracks for editing and playback within the Apple ecosystem.</p>
+  <p>Interestingly, when the International Organization for Standardization (ISO) was looking to create the global MP4 standard, they actually used Apple's MOV format as the blueprint. That means MP4 and MOV are structurally almost identical under the hood.</p>
+
+  <h2 id="comparison">Feature Comparison</h2>
+  
+  <ComparisonTable 
+    caption="MOV vs MP4 Comparison"
+    headers={['Feature', 'MOV', 'MP4']}
+    rows={[
+      ['Developer', 'Apple', 'ISO (International Organization for Standardization)'],
+      ['Quality & File Size', 'Identical (when using the same codec)', 'Identical (when using the same codec)'],
+      ['Native Ecosystem', 'macOS, iOS, Final Cut Pro', 'Everything (Windows, Android, Web, Smart TVs)'],
+      ['Professional Editing', 'Excellent support for Apple ProRes', 'Standard for web delivery (H.264/H.265)'],
+      ['Web Streaming', 'Poor (often requires downloading first)', 'Excellent (native HTML5 support)']
+    ]}
+  />
+
+  <h2 id="which-to-choose">Which Should You Choose?</h2>
+  <p>Because the internal structure is so similar, a video compressed with H.264 will look identical and have the same file size whether it's wrapped in a MOV container or an MP4 container.</p>
+  <p>However, <strong>MP4 is the clear winner for everyday use</strong>. It is universally supported across all devices, operating systems, and web browsers. Only use MOV if you are working exclusively within the Apple ecosystem (like editing video on a Mac) and require support for professional Apple-specific codecs like ProRes.</p>
+</ArticleLayout>

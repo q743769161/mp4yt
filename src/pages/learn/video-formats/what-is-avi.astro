@@ -1,0 +1,63 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Formats', href: '/learn/video-formats/' },
+  { name: 'What is AVI?', href: '/learn/video-formats/what-is-avi/' },
+];
+
+const tocItems = [
+  { text: 'A Brief History', slug: 'history' },
+  { text: 'How AVI Works', slug: 'how-it-works' },
+  { text: 'Why is it Obsolete?', slug: 'why-obsolete' },
+  { text: 'Should You Download AVI?', slug: 'should-you-download' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What Is MP4?',
+    href: '/learn/video-formats/what-is-mp4/',
+    category: 'Video Formats',
+    description: 'Learn about the modern successor to AVI.'
+  },
+  {
+    title: 'Codecs Explained',
+    href: '/learn/codecs/what-is-a-codec/',
+    category: 'Codecs',
+    description: 'Understand how video compression works.'
+  }
+];
+---
+
+<ArticleLayout
+  title="What is an AVI File? (And Why You Should Avoid It)"
+  description="Learn about the history of the AVI format, why it creates massive file sizes, and why modern formats like MP4 have replaced it."
+  canonicalUrl="/learn/video-formats/what-is-avi/"
+  category="Video Formats"
+  categoryHref="/learn/video-formats/"
+  datePublished="2024-01-10T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="history">A Brief History of AVI</h2>
+  <p>AVI, which stands for <strong>Audio Video Interleave</strong>, is a multimedia container format introduced by Microsoft all the way back in 1992 as part of its Video for Windows software. For over a decade, it was the de facto standard for video files on the internet and on CD-ROMs.</p>
+
+  <h2 id="how-it-works">How AVI Works</h2>
+  <p>Like MP4, AVI is a <em>container</em>, not a codec. It "interleaves" audio and video data together. Back in the day, AVI files typically contained video compressed with older, less efficient codecs like DivX or Xvid.</p>
+
+  <h2 id="why-obsolete">Why is it Considered Obsolete?</h2>
+  <p>By today's standards, AVI is a legacy format with severe limitations:</p>
+  <ul>
+    <li><strong>Inefficient Compression:</strong> AVI was not designed for modern, high-efficiency codecs like H.264 or H.265. While technically possible to hack these codecs into an AVI container, it causes playback issues.</li>
+    <li><strong>Massive File Sizes:</strong> Because it relies on older compression technology, an AVI file is often 2x to 5x larger than an MP4 file of the exact same visual quality.</li>
+    <li><strong>Poor Web Support:</strong> Native HTML5 video players in modern web browsers (Chrome, Safari, Firefox) do not support AVI playback. You cannot stream an AVI file natively on the web.</li>
+    <li><strong>No Advanced Features:</strong> AVI lacks robust support for soft subtitles (like SRT), multiple audio tracks, or chapter markers.</li>
+  </ul>
+
+  <h2 id="should-you-download">Should You Download AVI Files?</h2>
+  <p>If a downloader gives you the choice between MP4 and AVI, <strong>always choose MP4</strong>. The only reason to download an AVI file today is if you are trying to play a video on an ancient piece of hardware (like an early 2000s DVD player with a USB port) that doesn't support modern MP4 containers.</p>
+</ArticleLayout>

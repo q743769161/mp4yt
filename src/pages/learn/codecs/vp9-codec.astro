@@ -1,0 +1,49 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Codecs', href: '/learn/codecs/' },
+  { name: 'VP9 Codec Explained', href: '/learn/codecs/vp9-codec/' },
+];
+
+const tocItems = [
+  { text: 'What is VP9?', slug: 'what-is-vp9' },
+  { text: 'VP9 vs H.265', slug: 'vp9-vs-h265' },
+  { text: 'YouTube and VP9', slug: 'youtube-and-vp9' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What is WebM?',
+    href: '/learn/video-formats/what-is-webm/',
+    category: 'Video Formats',
+    description: 'Learn about the container that holds VP9.'
+  }
+];
+---
+
+<ArticleLayout
+  title="VP9 Codec Explained: The Tech Powering YouTube"
+  description="Learn about Google's open-source VP9 codec, how it compares to H.265, and why it's the default choice for high-res web video."
+  canonicalUrl="/learn/codecs/vp9-codec/"
+  category="Codecs"
+  categoryHref="/learn/codecs/"
+  datePublished="2024-01-18T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="what-is-vp9">What is VP9?</h2>
+  <p>VP9 is an open-source, royalty-free video compression format developed by Google. It is the direct successor to VP8 and serves as the primary competitor to the patented H.265 (HEVC) codec. VP9 video is almost always packaged inside a <strong>WebM</strong> container.</p>
+
+  <h2 id="vp9-vs-h265">VP9 vs H.265 (HEVC)</h2>
+  <p>In terms of compression efficiency, VP9 and H.265 are roughly tied. Both can compress video to half the file size of the older H.264 standard. The key difference is licensing.</p>
+  <p>Because H.265 requires hardware manufacturers and software developers to pay expensive patent royalties, web browsers like Google Chrome and Mozilla Firefox historically refused to support it natively. Instead, they adopted the free VP9 standard.</p>
+
+  <h2 id="youtube-and-vp9">YouTube and VP9</h2>
+  <p>If you watch a YouTube video in 1440p or 4K on a PC, you are almost certainly watching a VP9 video stream. Google actively transcodes its highest-quality content into VP9 to save on server bandwidth.</p>
+  <p>When you use a video downloader to grab a 4K file from YouTube, the resulting file will usually be a `.webm` file encoded with VP9, precisely because that is the format Google uses to store the high-resolution file on its servers.</p>
+</ArticleLayout>

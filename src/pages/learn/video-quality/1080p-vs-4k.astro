@@ -1,0 +1,76 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Quality', href: '/learn/video-quality/' },
+  { name: '1080p vs 4K', href: '/learn/video-quality/1080p-vs-4k/' },
+];
+
+const tocItems = [
+  { text: 'The Pixel Count', slug: 'pixel-count' },
+  { text: 'File Size Differences', slug: 'file-size' },
+  { text: 'Hardware Requirements', slug: 'hardware' },
+  { text: 'Which Should You Download?', slug: 'which-to-download' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Resolutions Explained',
+    href: '/learn/video-quality/resolutions-explained/',
+    category: 'Video Quality',
+    description: 'Learn the basics of video resolutions.'
+  },
+  {
+    title: 'Understanding Bitrate',
+    href: '/learn/video-quality/understanding-bitrate/',
+    category: 'Video Quality',
+    description: 'Why resolution isn\'t the only thing that matters.'
+  }
+];
+---
+
+<ArticleLayout
+  title="1080p vs 4K: Is 4K Actually Worth Downloading?"
+  description="4K offers four times the resolution of 1080p, but at a massive storage cost. Learn when it's worth downloading 4K video."
+  canonicalUrl="/learn/video-quality/1080p-vs-4k/"
+  category="Video Quality"
+  categoryHref="/learn/video-quality/"
+  datePublished="2024-01-14T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="pixel-count">The Pixel Count: 4x the Detail</h2>
+  <p>The primary difference between 1080p (Full HD) and 4K (Ultra HD) is the sheer number of pixels on the screen.</p>
+  <ul>
+    <li><strong>1080p</strong> has a resolution of 1920x1080, which equals roughly <strong>2 million pixels</strong>.</li>
+    <li><strong>4K</strong> has a resolution of 3840x2160, which equals roughly <strong>8.3 million pixels</strong>.</li>
+  </ul>
+  <p>That means a 4K image contains four times the visual data of a 1080p image. On a large TV or a high-end monitor, a 4K video will look significantly sharper, revealing fine details (like individual hairs or blades of grass) that 1080p blurs out.</p>
+
+  <h2 id="file-size">The Trade-off: Massive File Sizes</h2>
+  <p>Because 4K contains four times the data, the files are significantly larger. Even when using highly efficient codecs like H.265 (HEVC), a 4K video download can easily be 3x to 5x larger than the 1080p equivalent.</p>
+  <p>If you have limited storage space on your phone or hard drive, downloading a playlist of 4K videos will fill it up incredibly fast.</p>
+
+  <h2 id="hardware">Hardware Requirements</h2>
+  <p>Decoding 8.3 million pixels 30 times a second requires significant processing power. While almost any smartphone from the last decade can play a 1080p video smoothly without draining the battery, playing a high-bitrate 4K video on an older device can lead to stuttering, overheating, and rapid battery drain.</p>
+
+  <ComparisonTable 
+    caption="1080p vs 4K Quick Comparison"
+    headers={['Feature', '1080p (Full HD)', '4K (Ultra HD)']}
+    rows={[
+      ['Resolution', '1920 x 1080', '3840 x 2160'],
+      ['Pixel Count', '2 Million', '8.3 Million'],
+      ['File Size', 'Moderate', 'Very Large'],
+      ['Best Viewing Device', 'Phones, Laptops, 1080p TVs', 'Large 4K TVs, 4K PC Monitors']
+    ]}
+  />
+
+  <h2 id="which-to-download">Which Should You Download?</h2>
+  <p><strong>Download 1080p if:</strong> You are going to watch the video on a smartphone or a laptop. On screens smaller than 15 inches, the human eye struggles to tell the difference between 1080p and 4K, making the massive file size of 4K a waste of space.</p>
+  <p><strong>Download 4K if:</strong> You plan to cast the video to a large 4K Smart TV in your living room, or if you are downloading stock footage that you plan to edit and crop in professional software.</p>
+</ArticleLayout>

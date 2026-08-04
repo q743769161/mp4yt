@@ -1,0 +1,53 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Quality', href: '/learn/video-quality/' },
+  { name: 'Understanding Bitrate', href: '/learn/video-quality/understanding-bitrate/' },
+];
+
+const tocItems = [
+  { text: 'What is Bitrate?', slug: 'what-is-bitrate' },
+  { text: 'CBR vs VBR', slug: 'cbr-vs-vbr' },
+  { text: 'Bitrate vs Resolution', slug: 'bitrate-vs-resolution' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Resolutions Explained',
+    href: '/learn/video-quality/resolutions-explained/',
+    category: 'Video Quality',
+    description: 'Understand video resolutions from 360p to 4K.'
+  }
+];
+---
+
+<ArticleLayout
+  title="Understanding Video Bitrate: Higher Isn't Always Better"
+  description="Bitrate controls file size and quality. Learn how it works, why higher isn't always better, and what settings to look for."
+  canonicalUrl="/learn/video-quality/understanding-bitrate/"
+  category="Video Quality"
+  categoryHref="/learn/video-quality/"
+  datePublished="2023-11-05T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="what-is-bitrate">What is Bitrate?</h2>
+  <p>Bitrate is the amount of data processed per second in a video or audio file, typically measured in kilobits per second (kbps) or megabits per second (Mbps). It is the single most important factor determining the file size of your download.</p>
+  <p>Generally, a higher bitrate means better quality (less compression artifacts like blockiness) but results in a larger file size.</p>
+
+  <h2 id="cbr-vs-vbr">CBR vs VBR</h2>
+  <p>There are two main ways bitrate is allocated in a video file:</p>
+  <ul>
+    <li><strong>Constant Bitrate (CBR):</strong> The same amount of data is used for every second of the video, regardless of how complex the scene is. This results in predictable file sizes but can waste data on simple scenes (like a black screen) and starve complex, fast-moving scenes of the data they need.</li>
+    <li><strong>Variable Bitrate (VBR):</strong> The bitrate fluctuates depending on the complexity of the scene. Fast-action scenes get more data to prevent blockiness, while still scenes get less data. VBR is far more efficient and produces better overall quality for the same file size.</li>
+  </ul>
+
+  <h2 id="bitrate-vs-resolution">Bitrate vs Resolution</h2>
+  <p>A common mistake is assuming that a 4K video is automatically better quality than a 1080p video. If a 4K video has a severely restricted bitrate, it will look worse (blocky and blurry) than a high-bitrate 1080p video.</p>
+  <p>When downloading, you want a balance: enough resolution to fill your screen, and a high enough bitrate so that the image is crisp and free of compression artifacts.</p>
+</ArticleLayout>

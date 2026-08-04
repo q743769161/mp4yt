@@ -1,0 +1,14 @@
+---
+import CategoryLayout from '../../../layouts/CategoryLayout.astro';
+const articles = [
+  { title: 'Browser Compatibility Guide', href: '/learn/compatibility/browser-compatibility/', description: 'Which video formats work in which browsers? Chrome, Safari, Firefox, Edge — a complete compatibility reference.' },
+];
+---
+<CategoryLayout
+  title="Video Compatibility — Browsers, Devices & Platforms"
+  description="Which video and audio formats work on which devices and browsers? A complete compatibility guide for downloads."
+  canonicalUrl="https://mp4yt.com/learn/compatibility/"
+  categoryName="Compatibility"
+  categoryIcon="📱"
+  articles={articles}
+/>

@@ -1,0 +1,59 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Formats', href: '/learn/video-formats/' },
+  { name: 'MP4 vs MKV', href: '/learn/video-formats/mp4-vs-mkv/' },
+];
+
+const tocItems = [
+  { text: 'What is MKV?', slug: 'what-is-mkv' },
+  { text: 'Feature Comparison', slug: 'comparison' },
+  { text: 'Which Should You Choose?', slug: 'which-to-choose' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What Is MP4?',
+    href: '/learn/video-formats/what-is-mp4/',
+    category: 'Video Formats',
+    description: 'A comprehensive guide to the MP4 container format.'
+  }
+];
+---
+
+<ArticleLayout
+  title="MP4 vs MKV: Quality vs Compatibility"
+  description="MKV offers maximum flexibility while MP4 offers maximum compatibility. Learn when to choose each format."
+  canonicalUrl="/learn/video-formats/mp4-vs-mkv/"
+  category="Video Formats"
+  categoryHref="/learn/video-formats/"
+  datePublished="2023-11-03T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="what-is-mkv">What is MKV?</h2>
+  <p>MKV (Matroska Video) is a highly flexible, open-source container format. Unlike MP4, which has strict limitations on the types of video and audio it can hold, MKV can encapsulate virtually any codec.</p>
+  <p>It is especially popular among enthusiasts because it can hold unlimited video, audio, and subtitle tracks in a single file, making it the format of choice for ripping DVDs and Blu-rays.</p>
+
+  <h2 id="comparison">Feature Comparison</h2>
+  
+  <ComparisonTable 
+    caption="MP4 vs MKV Feature Comparison"
+    headers={['Feature', 'MP4', 'MKV']}
+    rows={[
+      ['Subtitle Support', 'Limited (hardcoded or specific formats)', 'Unlimited (soft subs, multiple languages)'],
+      ['Audio Tracks', 'Usually 1-2 (stereo/5.1)', 'Unlimited (multiple languages/commentaries)'],
+      ['Compatibility', 'Universal', 'Requires specific players (VLC) or modern TVs'],
+      ['Licensing', 'Patented', 'Open-source']
+    ]}
+  />
+
+  <h2 id="which-to-choose">Which Should You Choose?</h2>
+  <p>Choose <strong>MP4</strong> for maximum compatibility across all devices, mobile phones, and web browsers. Choose <strong>MKV</strong> if you need multiple audio tracks, high-quality soft subtitles, or are archiving high-definition content for playback on a dedicated media center.</p>
+</ArticleLayout>

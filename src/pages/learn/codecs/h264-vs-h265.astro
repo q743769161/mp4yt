@@ -1,0 +1,66 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Codecs', href: '/learn/codecs/' },
+  { name: 'H.264 vs H.265', href: '/learn/codecs/h264-vs-h265/' },
+];
+
+const tocItems = [
+  { text: 'The Industry Standard: H.264', slug: 'h264' },
+  { text: 'The Successor: H.265 (HEVC)', slug: 'h265' },
+  { text: 'Comparison', slug: 'comparison' },
+  { text: 'Which to Download?', slug: 'which-to-download' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What Is a Codec?',
+    href: '/learn/codecs/what-is-a-codec/',
+    category: 'Codecs',
+    description: 'Learn the basics of video compression.'
+  }
+];
+---
+
+<ArticleLayout
+  title="H.264 vs H.265 (HEVC): Complete Comparison"
+  description="H.264 is everywhere. H.265 is better but less compatible. Compare both codecs on quality, file size, and device support."
+  canonicalUrl="/learn/codecs/h264-vs-h265/"
+  category="Codecs"
+  categoryHref="/learn/codecs/"
+  datePublished="2023-11-08T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="h264">The Industry Standard: H.264 (AVC)</h2>
+  <p>H.264, also known as Advanced Video Coding (AVC), is the most widely used video codec in the world. Introduced in 2003, it powers Blu-ray discs, YouTube streams, and almost every video you capture on a smartphone.</p>
+  <p>Its main advantage today is <strong>100% universal compatibility</strong>. Any device manufactured in the last 15 years has dedicated hardware to decode H.264 efficiently.</p>
+
+  <h2 id="h265">The Successor: H.265 (HEVC)</h2>
+  <p>H.265, or High Efficiency Video Coding (HEVC), was designed to replace H.264, especially for 4K and 8K content. It is significantly more efficient at compressing video data.</p>
+  <p>H.265 can deliver the exact same visual quality as H.264 but at <strong>roughly half the file size</strong>. Alternatively, it can deliver vastly better quality at the same file size.</p>
+
+  <h2 id="comparison">Comparison</h2>
+  
+  <ComparisonTable 
+    caption="H.264 vs H.265"
+    headers={['Feature', 'H.264 (AVC)', 'H.265 (HEVC)']}
+    rows={[
+      ['Compression Efficiency', 'Baseline standard', 'Up to 50% more efficient'],
+      ['File Size', 'Standard', 'Much smaller (for same quality)'],
+      ['Processing Power Needed', 'Low (easy to play/edit)', 'High (requires modern hardware)'],
+      ['Compatibility', 'Universal (100%)', 'High, but older devices may struggle'],
+      ['Best For', '1080p, Universal sharing', '4K HDR, Saving storage space']
+    ]}
+  />
+
+  <h2 id="which-to-download">Which Should You Download?</h2>
+  <p>If you have limited storage space and are watching on a modern device (a phone or PC made in the last 5 years), downloading the <strong>H.265</strong> version of a video will save you significant space without sacrificing quality.</p>
+  <p>However, if you are downloading a video to play on an older Smart TV, a low-end device, or to edit in older software, stick with <strong>H.264</strong> to ensure it plays smoothly without stuttering.</p>
+</ArticleLayout>

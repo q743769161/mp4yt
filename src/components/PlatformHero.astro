@@ -451,6 +451,250 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
 </style>
 
 <script>
+  // ═══════════════════════════════════════════════════════════════
+  // CLIENT-SIDE COBALT EXTRACTION ENGINE (PlatformHero)
+  // All API calls go directly from the browser to Cobalt instances.
+  // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
+  // ═══════════════════════════════════════════════════════════════
+
+  // ── Community Cobalt instances — sourced from cobalt.directory, sorted by uptime ──
+  const COBALT_INSTANCES = [
+    "https://melon.clxxped.lol/",
+    "https://nuko-c.meowing.de/",
+    "https://apicobalt.mgytr.top/",
+    "https://cobalt.omega.wolfy.love/",
+    "https://grapefruit.clxxped.lol/",
+    "https://lime.clxxped.lol/",
+    "https://subito-c.meowing.de/",
+    "https://cobalt.alpha.wolfy.love/",
+    "https://kitty.tame.gg/",
+    "https://api.cobalt.liubquanti.click/",
+    "https://api.qwkuns.me/",
+  ];
+
+  const COBALT_TIMEOUT_MS = 12000;
+
+  const SKIP_ERROR_CODES = new Set([
+    "error.api.auth.jwt.missing",
+    "error.api.auth.jwt.invalid",
+    "error.api.auth.turnstile.missing",
+    "error.api.auth.turnstile.invalid",
+    "error.api.auth.key.invalid",
+    "error.api.auth.key.ip_not_allowed",
+    "error.api.youtube.login",
+    "error.api.youtube.decipher",
+  ]);
+
+  function humanizeError(errorCode: string, targetUrl: string): string | null {
+    const isYouTube = /youtu\.?be/i.test(targetUrl);
+    const errorMap: Record<string, string | null> = {
+      "error.api.youtube.login": isYouTube
+        ? "YouTube requires authentication for this video."
+        : "Authentication required for this platform.",
+      "error.api.youtube.decipher":
+        "YouTube changed its player. Try again in a few hours.",
+      "error.api.rate_exceeded":
+        "Rate limit reached. Please wait a moment and try again.",
+      "error.api.content.video.unavailable":
+        "This video is unavailable, private, or region-locked.",
+      "error.api.content.video.live":
+        "Live streams cannot be downloaded. Wait until the stream ends.",
+      "error.api.link.unsupported":
+        "This URL is not supported. Check if the link is valid.",
+      "error.api.fetch.fail":
+        "Could not reach the video platform. The URL may be broken or expired.",
+      "error.api.fetch.rate":
+        "The platform rate-limited the request. Try again in a minute.",
+      "error.api.fetch.empty":
+        "The platform returned an empty response. Try again later.",
+    };
+    return errorMap[errorCode] || null;
+  }
+
+  /** Call a single Cobalt instance with timeout */
+  async function callCobalt(
+    targetUrl: string,
+    quality: string,
+    mode: string,
+    cobaltApiUrl: string,
+  ): Promise<any> {
+    const endpoint = cobaltApiUrl.endsWith("/")
+      ? cobaltApiUrl
+      : `${cobaltApiUrl}/`;
+
+    const body: any = {
+      url: targetUrl,
+      downloadMode: mode,
+      youtubeVideoCodec: "h264",
+    };
+
+    if (mode === "audio") {
+      body.audioFormat = quality === "best" ? "mp3" : quality;
+    } else {
+      body.videoQuality = quality === "best" ? "max" : quality;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), COBALT_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorCode = errorData.error?.code || "";
+        if (SKIP_ERROR_CODES.has(errorCode)) {
+          const err: any = new Error(`Auth-gated (${errorCode})`);
+          err.skipInstance = true;
+          throw err;
+        }
+        const friendly = humanizeError(errorCode, targetUrl);
+        throw new Error(
+          friendly || `Cobalt responded with status ${response.status}`,
+        );
+      }
+
+      const data = await response.json();
+
+      if (data.status === "error") {
+        const errorCode = data.error?.code || "";
+        if (SKIP_ERROR_CODES.has(errorCode)) {
+          const err: any = new Error(`Auth-gated (${errorCode})`);
+          err.skipInstance = true;
+          throw err;
+        }
+        const friendly = humanizeError(errorCode, targetUrl);
+        throw new Error(friendly || "Cobalt returned processing error");
+      }
+
+      return data;
+    } catch (e: any) {
+      clearTimeout(timeoutId);
+      if (e.name === "AbortError") {
+        throw new Error(
+          `Instance timed out after ${COBALT_TIMEOUT_MS / 1000}s`,
+        );
+      }
+      throw e;
+    }
+  }
+
+  /** Try Cobalt across multiple instances with automatic failover */
+  async function callCobaltWithFailover(
+    targetUrl: string,
+    quality: string,
+    mode: string,
+  ): Promise<any> {
+    let lastError: Error | null = null;
+
+    for (const apiUrl of COBALT_INSTANCES) {
+      try {
+        return await callCobalt(targetUrl, quality, mode, apiUrl);
+      } catch (e: any) {
+        if (!e.skipInstance) lastError = e;
+        continue;
+      }
+    }
+
+    throw lastError || new Error("All instances failed. Please try again later.");
+  }
+
+  // ── Quality extraction: fetch all formats in parallel ──
+  const FORMATS_CONFIG = [
+    { q: "1080", mode: "auto", label: "1080p (FHD)", ext: "mp4" },
+    { q: "720", mode: "auto", label: "720p (HD)", ext: "mp4" },
+    { q: "480", mode: "auto", label: "480p", ext: "mp4" },
+    { q: "360", mode: "auto", label: "360p", ext: "mp4" },
+    { q: "240", mode: "auto", label: "240p", ext: "mp4" },
+    { q: "144", mode: "auto", label: "144p", ext: "mp4" },
+    { q: "best", mode: "audio", label: "Audio (MP3)", ext: "mp3" },
+  ];
+
+  /** Extract all available formats from Cobalt (runs in browser) */
+  async function extractAllFormats(targetUrl: string) {
+    const results = await Promise.all(
+      FORMATS_CONFIG.map(async (config) => {
+        try {
+          const resObj = await callCobaltWithFailover(
+            targetUrl,
+            config.q,
+            config.mode,
+          );
+          let streamUrl = "";
+          let filename = "";
+
+          if (resObj.status === "redirect" || resObj.status === "tunnel") {
+            streamUrl = resObj.url;
+            filename = resObj.filename || "video.mp4";
+          } else if (
+            resObj.status === "picker" &&
+            Array.isArray(resObj.picker) &&
+            resObj.picker.length > 0
+          ) {
+            streamUrl = resObj.picker[0].url;
+            filename = resObj.picker[0].filename || "video.mp4";
+          }
+
+          if (streamUrl) {
+            return {
+              resolution: config.label,
+              ext: config.ext,
+              filesize: null,
+              has_audio: config.mode === "auto",
+              url: streamUrl,
+              filename: filename,
+            };
+          }
+        } catch (e: any) {
+          return { error: e.message };
+        }
+        return null;
+      }),
+    );
+
+    const validFormats = results.filter(
+      (f): f is Exclude<typeof f, null | { error: string }> =>
+        f !== null && !("error" in f),
+    );
+
+    if (validFormats.length === 0) {
+      const errors = results
+        .filter((f): f is { error: string } => f !== null && "error" in f)
+        .map((f) => f.error);
+      const uniqueErrors = [...new Set(errors)];
+      throw new Error(
+        uniqueErrors.length > 0
+          ? uniqueErrors[0]
+          : "Could not extract any format. Try another URL or try again later.",
+      );
+    }
+
+    // Deduplicate by URL
+    const seenUrls = new Set<string>();
+    const uniqueFormats: typeof validFormats = [];
+    for (const fmt of validFormats) {
+      if (!seenUrls.has(fmt.url)) {
+        seenUrls.add(fmt.url);
+        uniqueFormats.push(fmt);
+      }
+    }
+
+    return uniqueFormats;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // UI LOGIC
+  // ═══════════════════════════════════════════════════════════════
+
   const form = document.getElementById('extract-form') as HTMLFormElement;
   const input = document.getElementById('hero-input') as HTMLInputElement;
   const extractBtn = document.getElementById('extract-btn') as HTMLButtonElement;
@@ -550,116 +794,180 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     return `${sanitized}-${cleanRes}.${ext}`;
   }
 
+  function getYoutubeVideoId(url: string): string | null {
+    try {
+      const match = url.match(
+        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
+      );
+      return match ? match[1] : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function getPlatformName(url: string): string {
+    try {
+      const host = new URL(url).hostname.replace('www.', '');
+      const map: Record<string, string> = {
+        'youtube.com': 'YouTube', 'youtu.be': 'YouTube',
+        'instagram.com': 'Instagram',
+        'tiktok.com': 'TikTok',
+        'twitter.com': 'Twitter/X', 'x.com': 'Twitter/X',
+        'facebook.com': 'Facebook', 'fb.com': 'Facebook',
+        'reddit.com': 'Reddit',
+        'vimeo.com': 'Vimeo',
+        'twitch.tv': 'Twitch',
+        'soundcloud.com': 'SoundCloud',
+        'dailymotion.com': 'Dailymotion',
+      };
+      return map[host] ?? host;
+    } catch { return 'Video'; }
+  }
+
+  /**
+   * Main extraction function — calls Cobalt directly from the browser.
+   * No Worker backend involved. Zero subrequests.
+   */
   async function extractVideo(url: string) {
     setLoading(true);
     try {
-      const resp = await fetch(`/api/extract?url=${encodeURIComponent(url)}`);
-      const data = await resp.json();
-      if (!resp.ok) {
-        showError(data.error ?? 'Failed to extract video. Please check the URL and try again.');
-        return;
+      let formats: any[] = [];
+      let apiTitle = '';
+      let apiThumb = '';
+
+      // 1. Try server-side proxy endpoint first (/api/extract)
+      try {
+        const apiRes = await fetch(`/api/extract?url=${encodeURIComponent(url)}`);
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (apiData.status === 'success' && Array.isArray(apiData.formats) && apiData.formats.length > 0) {
+            formats = apiData.formats;
+            apiTitle = apiData.title || '';
+            apiThumb = apiData.thumbnail || '';
+          }
+        }
+      } catch (e) {
+        /* Fallback to browser direct fetch if /api/extract is offline */
       }
-      resultTitle.textContent = data.title ?? 'Untitled video';
-      resultDuration.textContent = formatDuration(data.duration);
-      currentFilename = data.filename ?? 'video.mp4';
+
+      // 2. Fallback to direct client-side extraction if server proxy returned no formats
+      if (formats.length === 0) {
+        formats = await extractAllFormats(url);
+      }
+
+      const defaultFormat = formats[0];
+      const defaultFilename = defaultFormat.filename;
+      const filenameWithoutExt =
+        defaultFilename.substring(0, defaultFilename.lastIndexOf('.')) ||
+        defaultFilename;
+      const title = apiTitle || filenameWithoutExt || 'Video';
+
+      // Generate thumbnail
+      let thumbnail = apiThumb;
+      if (!thumbnail) {
+        const ytId = getYoutubeVideoId(url);
+        if (ytId) {
+          thumbnail = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+        }
+      }
+
+      // Populate result card
+      const platformName = getPlatformName(url);
+      const resultPlatform = document.getElementById('result-platform') as HTMLSpanElement;
+      if (resultPlatform) resultPlatform.textContent = platformName;
+      resultTitle.textContent = title;
+      resultDuration.textContent = formatDuration(0);
+      currentFilename = defaultFilename;
       resultFilename.textContent = currentFilename;
-      resultThumb.src = data.thumbnail ?? '';
-      resultThumb.alt = data.title ?? 'Video thumbnail';
-      currentStreamUrl = data.url;
-      const downloadUrl = `/download-stream?url=${encodeURIComponent(data.url)}&filename=${encodeURIComponent(currentFilename)}`;
-      resultDownloadBtn.href = downloadUrl;
+      resultThumb.src = thumbnail;
+      resultThumb.alt = title;
+
+      // Direct CDN link
+      currentStreamUrl = defaultFormat.url;
+      resultDownloadBtn.href = currentStreamUrl;
       resultDownloadBtn.setAttribute('download', currentFilename);
       resultVideo.src = currentStreamUrl;
 
       // Populate resolution options dropdown
       dropdownMenu.innerHTML = '';
-      if (Array.isArray(data.formats) && data.formats.length > 0) {
-        let selectedFormat = data.formats[0];
+      let selectedFormat = formats[0];
 
-        const updateSelectedFormat = (fmt: any) => {
-          selectedFormat = fmt;
-          const label = fmt.resolution;
-          const sizeStr = fmt.filesize ? formatBytes(fmt.filesize) : 'Unknown size';
-          triggerText.textContent = `${label} (${fmt.ext} · ${sizeStr})`;
-          
-          currentStreamUrl = fmt.url;
-          const specificFilename = getFilenameWithRes(data.title || 'video', fmt.resolution, fmt.ext);
-          let rowDownloadUrl = `/download-stream?url=${encodeURIComponent(fmt.url)}&filename=${encodeURIComponent(specificFilename)}`;
-          if (fmt.audio_url) {
-            rowDownloadUrl += `&audioUrl=${encodeURIComponent(fmt.audio_url)}`;
+      const updateSelectedFormat = (fmt: any) => {
+        selectedFormat = fmt;
+        const label = fmt.resolution;
+        const sizeStr = fmt.filesize ? formatBytes(fmt.filesize) : 'Unknown size';
+        triggerText.textContent = `${label} (${fmt.ext} · ${sizeStr})`;
+
+        currentStreamUrl = fmt.url;
+        const specificFilename = getFilenameWithRes(title, fmt.resolution, fmt.ext);
+        resultDownloadBtn.href = fmt.url;
+        resultDownloadBtn.setAttribute('download', specificFilename);
+        currentFilename = specificFilename;
+        resultFilename.textContent = specificFilename;
+        resultVideo.src = fmt.url;
+
+        resultDownloadBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8M5 7l3 3 3-3M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download ${fmt.resolution}
+        `;
+
+        const items = dropdownMenu.querySelectorAll('.dropdown-item');
+        items.forEach((item: any) => {
+          const itemRes = item.getAttribute('data-res');
+          if (itemRes === fmt.resolution) {
+            item.classList.add('active');
+            item.setAttribute('aria-selected', 'true');
+          } else {
+            item.classList.remove('active');
+            item.setAttribute('aria-selected', 'false');
           }
-          resultDownloadBtn.href = rowDownloadUrl;
-          resultDownloadBtn.setAttribute('download', specificFilename);
-          currentFilename = specificFilename;
-          resultFilename.textContent = specificFilename;
+        });
+      };
 
-          // Video preview uses raw stream URL directly (plays inline)
-          resultVideo.src = fmt.url;
+      formats.forEach((fmt: any) => {
+        const item = document.createElement('button');
+        item.className = 'dropdown-item';
+        item.type = 'button';
+        item.role = 'option';
+        item.setAttribute('data-res', fmt.resolution);
+        item.setAttribute('data-ext', fmt.ext);
 
-          // Modify download button text
-          resultDownloadBtn.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M8 2v8M5 7l3 3 3-3M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Download ${fmt.resolution}
-          `;
+        const sizeLabel = fmt.filesize ? formatBytes(fmt.filesize) : 'Unknown size';
+        const audioIcon = fmt.has_audio
+          ? `<span class="opt-audio has-audio" title="Contains Audio"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M8 2a.75.75 0 01.19.46v10.58a.75.75 0 01-1.28.53L3.69 10.5H1.75A.75.75 0 011 9.75V6.25A.75.75 0 011.75 5.5h1.94l3.22-3.28A.75.75 0 018 2zm3.3 3.2a.75.75 0 111.1 1.02 3.5 3.5 0 010 4.56.75.75 0 11-1.1 1.02 5 5 0 000-6.6zM13.8 2.7a.75.75 0 111.1 1.02 8 8 0 010 9.56.75.75 0 11-1.1 1.02 9.5 9.5 0 000-11.6z"/></svg>Video + Audio</span>`
+          : `<span class="opt-audio no-audio" title="No Audio (Muted)"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M6.5 1.75a.75.75 0 01.19.46v11.58a.75.75 0 01-1.28.53L2.19 11H.75A.75.75 0 010 10.25V5.75A.75.75 0 01.75 5h1.44l3.22-3.28a.75.75 0 01.59-.22zM12.44 8l1.78-1.78a.75.75 0 00-1.06-1.06L11.38 6.94l-1.78-1.78a.75.75 0 00-1.06 1.06L10.32 8l-1.78 1.78a.75.75 0 001.06 1.06l1.78-1.78 1.78 1.78a.75.75 0 001.06-1.06L12.44 8z"/></svg>Video Only</span>`;
 
-          // Mark active item in dropdown
-          const items = dropdownMenu.querySelectorAll('.dropdown-item');
-          items.forEach((item: any) => {
-            const itemRes = item.getAttribute('data-res');
-            if (itemRes === fmt.resolution) {
-              item.classList.add('active');
-              item.setAttribute('aria-selected', 'true');
-            } else {
-              item.classList.remove('active');
-              item.setAttribute('aria-selected', 'false');
-            }
-          });
-        };
+        item.innerHTML = `
+          <div class="opt-info">
+            <span class="opt-res">${fmt.resolution}</span>
+            <span class="opt-badge">${fmt.ext}</span>
+          </div>
+          <div class="opt-meta">
+            <span class="opt-size">${sizeLabel}</span>
+            ${audioIcon}
+          </div>
+        `;
 
-        data.formats.forEach((fmt: any) => {
-          const item = document.createElement('button');
-          item.className = 'dropdown-item';
-          item.type = 'button';
-          item.role = 'option';
-          item.setAttribute('data-res', fmt.resolution);
-          item.setAttribute('data-ext', fmt.ext);
-
-          const sizeLabel = fmt.filesize ? formatBytes(fmt.filesize) : 'Unknown size';
-          const audioIcon = fmt.has_audio
-            ? `<span class="opt-audio has-audio" title="Contains Audio"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M8 2a.75.75 0 01.19.46v10.58a.75.75 0 01-1.28.53L3.69 10.5H1.75A.75.75 0 011 9.75V6.25A.75.75 0 011.75 5.5h1.94l3.22-3.28A.75.75 0 018 2zm3.3 3.2a.75.75 0 111.1 1.02 3.5 3.5 0 010 4.56.75.75 0 11-1.1 1.02 5 5 0 000-6.6zM13.8 2.7a.75.75 0 111.1 1.02 8 8 0 010 9.56.75.75 0 11-1.1 1.02 9.5 9.5 0 000-11.6z"/></svg>Video + Audio</span>`
-            : `<span class="opt-audio no-audio" title="No Audio (Muted)"><svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M6.5 1.75a.75.75 0 01.19.46v11.58a.75.75 0 01-1.28.53L2.19 11H.75A.75.75 0 010 10.25V5.75A.75.75 0 01.75 5h1.44l3.22-3.28a.75.75 0 01.59-.22zM12.44 8l1.78-1.78a.75.75 0 00-1.06-1.06L11.38 6.94l-1.78-1.78a.75.75 0 00-1.06 1.06L10.32 8l-1.78 1.78a.75.75 0 001.06 1.06l1.78-1.78 1.78 1.78a.75.75 0 001.06-1.06L12.44 8z"/></svg>Video Only</span>`;
-
-          item.innerHTML = `
-            <div class="opt-info">
-              <span class="opt-res">${fmt.resolution}</span>
-              <span class="opt-badge">${fmt.ext}</span>
-            </div>
-            <div class="opt-meta">
-              <span class="opt-size">${sizeLabel}</span>
-              ${audioIcon}
-            </div>
-          `;
-
-          item.addEventListener('click', () => {
-            updateSelectedFormat(fmt);
-            dropdownMenu.classList.add('hidden');
-            triggerBtn.classList.remove('active');
-            triggerBtn.setAttribute('aria-expanded', 'false');
-          });
-
-          dropdownMenu.appendChild(item);
+        item.addEventListener('click', () => {
+          updateSelectedFormat(fmt);
+          dropdownMenu.classList.add('hidden');
+          triggerBtn.classList.remove('active');
+          triggerBtn.setAttribute('aria-expanded', 'false');
         });
 
-        // Initialize with default selection
-        updateSelectedFormat(selectedFormat);
-      }
+        dropdownMenu.appendChild(item);
+      });
 
+      // Initialize with default selection
+      updateSelectedFormat(selectedFormat);
+
+      // Show result
       resultSection.classList.remove('hidden');
       resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch {
-      showError('Network error — please try again.');
+    } catch (err: any) {
+      showError(err.message || 'Extraction failed — please try again.');
     } finally {
       setLoading(false);
     }
@@ -685,14 +993,14 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     });
   }
 
-  // Native streaming download button — triggers Service Worker interception or direct browser proxy stream
+  // Direct CDN download — opens CDN URL in new tab so browser handles natively
   resultDownloadBtn.addEventListener('click', (e: Event) => {
     e.preventDefault();
-    const downloadUrl = resultDownloadBtn.href;
-    if (!downloadUrl || downloadUrl === '#') return;
+    const cdnUrl = resultDownloadBtn.href;
+    if (!cdnUrl || cdnUrl === '#') return;
 
-    // Trigger download natively
-    window.location.href = downloadUrl;
+    // Open CDN URL directly — browser downloads from CDN, zero Worker bandwidth
+    window.open(cdnUrl, '_blank');
 
     // Provide immediate visual feedback on the button
     const origHTML = resultDownloadBtn.innerHTML;

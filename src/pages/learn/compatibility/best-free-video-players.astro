@@ -1,0 +1,62 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Compatibility', href: '/learn/compatibility/' },
+  { name: 'Best Free Video Players', href: '/learn/compatibility/best-free-video-players/' },
+];
+
+const tocItems = [
+  { text: 'VLC Media Player', slug: 'vlc' },
+  { text: 'MPV', slug: 'mpv' },
+  { text: 'MPC-HC', slug: 'mpc-hc' }
+];
+
+const relatedArticles = [
+  {
+    title: 'How to Play MKV on Mac',
+    href: '/learn/compatibility/play-mkv-on-mac/',
+    category: 'Compatibility',
+    description: 'Mac specific solutions for MKV playback.'
+  }
+];
+---
+
+<ArticleLayout
+  title="The Best Free Video Players for Windows & Mac"
+  description="Stop relying on default system video players. Here are the top free, open-source video players that support every codec and format."
+  canonicalUrl="/learn/compatibility/best-free-video-players/"
+  category="Compatibility"
+  categoryHref="/learn/compatibility/"
+  datePublished="2024-01-20T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <p>The default media players built into Windows (Movies & TV) and macOS (QuickTime) are heavily restricted. They often fail to play modern MKV files or videos encoded with H.265. To get a seamless playback experience, you should use a dedicated, open-source media player.</p>
+
+  <h2 id="vlc">VLC Media Player (Best Overall)</h2>
+  <p>VLC is the undisputed king of media players. Developed by the VideoLAN non-profit organization, it is free, open-source, and has virtually every codec known to man built right into the software.</p>
+  <ul>
+    <li><strong>Pros:</strong> Plays absolutely anything. Available on Windows, Mac, Linux, iOS, and Android. Built-in subtitle downloader.</li>
+    <li><strong>Cons:</strong> The UI feels a bit dated on modern operating systems.</li>
+  </ul>
+
+  <h2 id="mpv">MPV (Best for Enthusiasts)</h2>
+  <p>MPV is a free, open-source, cross-platform media player designed for the minimalist. It has almost no graphical user interface; instead, it overlays a small, sleek control bar directly onto the video. It uses incredibly advanced scaling algorithms to make videos look sharper than they do in VLC.</p>
+  <ul>
+    <li><strong>Pros:</strong> Superior video scaling quality, minimalist UI, highly customizable via text files.</li>
+    <li><strong>Cons:</strong> Steep learning curve; most settings require editing a config file rather than clicking a menu.</li>
+  </ul>
+
+  <h2 id="mpc-hc">MPC-HC (Best for Old Windows PCs)</h2>
+  <p>Media Player Classic - Home Cinema (MPC-HC) is a lightweight, open-source media player for Windows. It mimics the look of the classic Windows Media Player 6.4 but is powered by modern decoding engines.</p>
+  <ul>
+    <li><strong>Pros:</strong> Incredibly lightweight, making it perfect for old laptops or low-end PCs that struggle to play HD video in VLC.</li>
+    <li><strong>Cons:</strong> Windows only. Official development stopped in 2017 (though community forks still exist).</li>
+  </ul>
+</ArticleLayout>

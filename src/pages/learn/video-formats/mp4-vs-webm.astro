@@ -1,0 +1,83 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Formats', href: '/learn/video-formats/' },
+  { name: 'MP4 vs WebM', href: '/learn/video-formats/mp4-vs-webm/' },
+];
+
+const tocItems = [
+  { text: 'Introduction', slug: 'introduction' },
+  { text: 'What is WebM?', slug: 'what-is-webm' },
+  { text: 'Feature Comparison', slug: 'comparison' },
+  { text: 'Which Should You Choose?', slug: 'which-to-choose' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What Is MP4?',
+    href: '/learn/video-formats/what-is-mp4/',
+    category: 'Video Formats',
+    description: 'A comprehensive guide to the MP4 container format.'
+  },
+  {
+    title: 'H.264 vs H.265',
+    href: '/learn/codecs/h264-vs-h265/',
+    category: 'Codecs',
+    description: 'Compare the most popular video codecs.'
+  }
+];
+---
+
+<ArticleLayout
+  title="MP4 vs WebM: Which Format Should You Download?"
+  description="Compare MP4 and WebM side by side — compatibility, file size, quality, and the best choice for different use cases."
+  canonicalUrl="/learn/video-formats/mp4-vs-webm/"
+  category="Video Formats"
+  categoryHref="/learn/video-formats/"
+  datePublished="2023-11-02T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="introduction">Introduction</h2>
+  <p>When downloading videos from the internet, you'll often be presented with a choice of formats. The two most common options are <strong>MP4</strong> and <strong>WebM</strong>. Both are excellent, modern video container formats, but they serve slightly different purposes and have different levels of compatibility.</p>
+
+  <h2 id="what-is-webm">What is WebM?</h2>
+  <p>While MP4 is a universal standard with roots in older MPEG formats, <strong>WebM</strong> is a relatively newer format created by Google. It was designed specifically for the web—it's open-source, royalty-free, and highly optimized for streaming HTML5 video.</p>
+  <p>WebM files typically use VP8 or VP9 video codecs and Vorbis or Opus audio codecs. These are highly efficient compression technologies that deliver great quality at smaller file sizes compared to older codecs.</p>
+
+  <h2 id="comparison">Feature Comparison</h2>
+  
+  <ComparisonTable 
+    caption="MP4 vs WebM Feature Comparison"
+    headers={['Feature', 'MP4', 'WebM']}
+    rows={[
+      ['Video Codecs', 'H.264, H.265 (HEVC)', 'VP8, VP9, AV1'],
+      ['Audio Codecs', 'AAC, MP3', 'Vorbis, Opus'],
+      ['Compatibility', 'Universal (All devices/browsers)', 'Excellent on Web, less on older mobile/TV'],
+      ['File Size', 'Small to Medium', 'Often smaller than equivalent MP4'],
+      ['Licensing', 'Patented (requires licensing)', 'Open-source, Royalty-free']
+    ]}
+  />
+
+  <h2 id="which-to-choose">Which Should You Choose?</h2>
+  
+  <h3>Choose MP4 if:</h3>
+  <ul>
+    <li>You want the video to play on absolutely any device (older iPhones, Smart TVs, offline players).</li>
+    <li>You plan to edit the video in professional software like Premiere Pro or Final Cut.</li>
+    <li>You are sharing the file directly with someone else and don't know what device they use.</li>
+  </ul>
+
+  <h3>Choose WebM if:</h3>
+  <ul>
+    <li>You are downloading videos specifically to re-upload to a website.</li>
+    <li>You want the smallest possible file size while retaining good quality (especially with VP9 codec).</li>
+    <li>You primarily watch videos in a modern web browser (Chrome, Firefox, Edge).</li>
+  </ul>
+</ArticleLayout>

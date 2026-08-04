@@ -1,0 +1,59 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Guides', href: '/learn/guides/' },
+  { name: 'How to Compress Video', href: '/learn/guides/how-to-compress-video/' },
+];
+
+const tocItems = [
+  { text: 'Why Compress Videos?', slug: 'why-compress' },
+  { text: 'Using Handbrake (Recommended)', slug: 'handbrake' },
+  { text: 'Understanding Export Settings', slug: 'settings' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Understanding Bitrate',
+    href: '/learn/video-quality/understanding-bitrate/',
+    category: 'Video Quality',
+    description: 'Learn the primary factor that controls file size.'
+  }
+];
+---
+
+<ArticleLayout
+  title="How to Compress Video Files (For Email or Discord)"
+  description="A step-by-step guide on how to shrink massive video files down to shareable sizes without turning them into a blurry mess."
+  canonicalUrl="/learn/guides/how-to-compress-video/"
+  category="Guides"
+  categoryHref="/learn/guides/"
+  datePublished="2024-01-22T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="why-compress">Why Compress Videos?</h2>
+  <p>If you record a video on your smartphone at 4K resolution, a 3-minute clip can easily exceed 1GB. Try sending that via email or Discord, and you will hit hard file size limits (usually 25MB). You need to compress the file before sharing.</p>
+
+  <h2 id="handbrake">Using Handbrake (The Best Free Tool)</h2>
+  <p>The industry standard for free video compression is an open-source tool called <strong>Handbrake</strong>. It uses advanced encoding engines to shrink videos aggressively while maintaining high visual quality.</p>
+  <ol>
+    <li>Download and install Handbrake from its official website.</li>
+    <li>Drag and drop your massive video file into the application window.</li>
+    <li>On the right side, open the <strong>Presets</strong> menu.</li>
+    <li>Navigate to <strong>Web</strong> and select <strong>Discord Small</strong> or <strong>Gmail Large</strong>.</li>
+    <li>Click <strong>Start Encode</strong> at the top.</li>
+  </ol>
+
+  <h2 id="settings">Understanding the Settings</h2>
+  <p>If you want to manually tune the compression in Handbrake, focus on these three settings:</p>
+  <ul>
+    <li><strong>Resolution:</strong> Downscaling a 4K video to 720p or 1080p is the fastest way to save space.</li>
+    <li><strong>Codec:</strong> Choosing <code>H.265 (HEVC)</code> instead of H.264 will result in a file roughly half the size, though it takes longer to process.</li>
+    <li><strong>Constant Quality (RF):</strong> Handbrake uses an RF slider. A lower number means better quality but larger files. An RF of 22 to 24 is usually the sweet spot for web video.</li>
+  </ul>
+</ArticleLayout>

@@ -1,0 +1,15 @@
+---
+import CategoryLayout from '../../../layouts/CategoryLayout.astro';
+const articles = [
+  { title: 'What Is a Video Codec?', href: '/learn/codecs/what-is-a-codec/', description: 'Codecs encode and decode video data. Learn what they are, why they matter, and how they affect your downloads.' },
+  { title: 'H.264 vs H.265 (HEVC): Complete Comparison', href: '/learn/codecs/h264-vs-h265/', description: 'H.264 is everywhere. H.265 is better but less compatible. Compare both codecs on quality, file size, and device support.' },
+];
+---
+<CategoryLayout
+  title="Video Codecs Explained — H.264, H.265, VP9 & AV1"
+  description="Understand video codecs: H.264, H.265 (HEVC), VP9, and AV1. Learn how they affect video quality, file size, and device compatibility."
+  canonicalUrl="https://mp4yt.com/learn/codecs/"
+  categoryName="Codecs"
+  categoryIcon="⚙️"
+  articles={articles}
+/>

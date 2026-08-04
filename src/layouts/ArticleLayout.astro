@@ -1,0 +1,365 @@
+---
+// ArticleLayout — Reusable layout for all knowledge hub articles and blog posts
+// Includes: breadcrumbs, metadata bar, TOC, reading progress, related articles, downloader CTA,
+// Article + BreadcrumbList JSON-LD, and ad-ready placeholder slots.
+
+import Layout from './Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import DownloaderCTA from '../components/DownloaderCTA.astro';
+import ShareButtons from '../components/ShareButtons.astro';
+
+interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
+
+interface RelatedArticle {
+  title: string;
+  href: string;
+  category: string;
+  description: string;
+}
+
+interface TOCItem {
+  text: string;
+  slug: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  category: string;
+  categoryHref: string;
+  datePublished: string;
+  dateModified?: string;
+  readTime?: string;
+  breadcrumbs: BreadcrumbItem[];
+  relatedArticles?: RelatedArticle[];
+  tocItems?: TOCItem[];
+  keywords?: string;
+  faqSchema?: object;
+  howToSchema?: object;
+}
+
+const SITE_URL = 'https://mp4yt.com';
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  category,
+  categoryHref,
+  datePublished,
+  dateModified = datePublished,
+  readTime = '5 min read',
+  breadcrumbs,
+  relatedArticles = [],
+  tocItems = [],
+  keywords,
+  faqSchema,
+  howToSchema,
+} = Astro.props;
+
+// Build Article JSON-LD
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Organization", "name": "mp4yt" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "mp4yt",
+    "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png` }
+  },
+  "datePublished": datePublished,
+  "dateModified": dateModified,
+  "mainEntityOfPage": canonicalUrl.startsWith('http') ? canonicalUrl : `${SITE_URL}${canonicalUrl}`
+};
+---
+
+<Layout
+  title={`${title} | mp4yt`}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  keywords={keywords}
+  breadcrumbItems={breadcrumbs}
+>
+  <ReadingProgress />
+  <Navbar />
+  <main id="main-content">
+    <!-- Article JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+    {howToSchema && <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />}
+
+    <article class="article-page">
+      <div class="page-container article-container">
+        <!-- Breadcrumbs -->
+        <Breadcrumbs items={breadcrumbs} />
+
+        <!-- Article Header -->
+        <header class="article-header">
+          <a href={categoryHref} class="eyebrow article-category-link">{category}</a>
+          <h1 class="display-lg article-title">{title}</h1>
+          <p class="body-lg article-subtitle">{description}</p>
+          <div class="article-meta">
+            <time datetime={datePublished}>{new Date(datePublished).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+            <span aria-hidden="true">·</span>
+            <span>{readTime}</span>
+            {dateModified !== datePublished && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>Updated {new Date(dateModified).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              </>
+            )}
+          </div>
+        </header>
+
+        <!-- Article Layout: Content + Optional Sidebar -->
+        <div class="article-layout">
+          <!-- Main Content -->
+          <div class="article-content">
+            <slot />
+
+            <!-- Downloader CTA -->
+            <DownloaderCTA />
+          </div>
+
+          <!-- Sidebar (TOC + Ad Slot) — Desktop only -->
+          {tocItems.length > 0 && (
+            <aside class="article-sidebar" aria-label="Table of contents">
+              <nav class="toc" aria-label="On this page">
+                <h2 class="toc-heading">ON THIS PAGE</h2>
+                <ul class="toc-list" role="list">
+                  {tocItems.map(item => (
+                    <li>
+                      <a href={`#${item.slug}`} class="toc-link">{item.text}</a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <!-- Ad slot placeholder — empty until AdSense approved -->
+              <div class="ad-slot-sidebar" aria-hidden="true"></div>
+            </aside>
+          )}
+        </div>
+
+        <ShareButtons />
+
+        <!-- Related Articles -->
+        {relatedArticles.length > 0 && (
+          <RelatedArticles articles={relatedArticles} />
+        )}
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .article-page {
+    background-color: var(--color-canvas);
+    padding: var(--sp-section) var(--sp-lg) var(--sp-5xl);
+  }
+
+  .article-container {
+    max-width: 1100px;
+  }
+
+  .article-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    margin-bottom: var(--sp-3xl);
+    max-width: 720px;
+  }
+
+  .article-category-link {
+    text-decoration: none;
+    transition: color 0.1s ease;
+  }
+
+  .article-category-link:hover {
+    color: var(--color-ink);
+  }
+
+  .article-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .article-subtitle {
+    margin: 0;
+    color: var(--color-body);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-xs);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-wrap: wrap;
+  }
+
+  /* Article layout: content + sidebar */
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: var(--sp-4xl);
+    align-items: start;
+  }
+
+  /* Main content styling */
+  .article-content {
+    min-width: 0;
+  }
+
+  .article-content :global(h2) {
+    margin: var(--sp-xl) 0 var(--sp-sm) 0;
+    color: var(--color-ink);
+    font-family: var(--font-headline);
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    scroll-margin-top: 80px;
+  }
+
+  .article-content :global(h3) {
+    margin: var(--sp-lg) 0 var(--sp-xs) 0;
+    color: var(--color-ink);
+    font-family: var(--font-headline);
+    font-size: 17px;
+    font-weight: 700;
+    text-transform: uppercase;
+    scroll-margin-top: 80px;
+  }
+
+  .article-content :global(p) {
+    margin: 0 0 var(--sp-md) 0;
+    color: var(--color-body);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin: 0 0 var(--sp-md) 0;
+    padding-left: var(--sp-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+    color: var(--color-body);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .article-content :global(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .article-content :global(a:hover) {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    text-decoration: none;
+    padding: 1px 4px;
+    margin: -1px -4px;
+  }
+
+  .article-content :global(strong) {
+    color: var(--color-ink);
+    font-weight: 700;
+  }
+
+  /* Sidebar */
+  .article-sidebar {
+    position: sticky;
+    top: 80px;
+  }
+
+  .toc {
+    border: var(--border);
+    padding: var(--sp-md);
+  }
+
+  .toc-heading {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+    margin: 0 0 var(--sp-sm) 0;
+  }
+
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xxs);
+  }
+
+  .toc-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-body);
+    text-decoration: none;
+    padding: 4px 0;
+    display: block;
+    line-height: 1.4;
+    transition: color 0.1s ease;
+  }
+
+  .toc-link:hover {
+    color: var(--color-ink);
+  }
+
+  .ad-slot-sidebar {
+    /* Prevents Cumulative Layout Shift (CLS) when AdSense loads */
+    min-height: 250px;
+  }
+
+  @media (max-width: 960px) {
+    .article-layout {
+      grid-template-columns: 1fr;
+    }
+    .article-sidebar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .article-page {
+      padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .article-page {
+      padding: var(--sp-3xl) var(--sp-sm) var(--sp-2xl);
+    }
+    .article-content :global(h2) {
+      font-size: 18px;
+    }
+    .article-content :global(p),
+    .article-content :global(ul),
+    .article-content :global(ol) {
+      font-size: 14px;
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Audio Formats', href: '/learn/audio/' },
+  { name: 'MP3 vs WAV', href: '/learn/audio/mp3-vs-wav/' },
+];
+
+const tocItems = [
+  { text: 'Lossy vs Lossless', slug: 'lossy-vs-lossless' },
+  { text: 'Comparison', slug: 'comparison' },
+  { text: 'Which Should You Choose?', slug: 'which-to-choose' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What is WAV?',
+    href: '/learn/audio/what-is-wav/',
+    category: 'Audio Formats',
+    description: 'Learn more about uncompressed audio.'
+  },
+  {
+    title: 'MP3 vs AAC',
+    href: '/learn/audio/mp3-vs-aac/',
+    category: 'Audio Formats',
+    description: 'Compare the two most popular compressed formats.'
+  }
+];
+---
+
+<ArticleLayout
+  title="MP3 vs WAV: Lossy vs Lossless Audio Explained"
+  description="Understand the critical differences between compressed MP3 files and uncompressed WAV files, and know which one to download."
+  canonicalUrl="/learn/audio/mp3-vs-wav/"
+  category="Audio Formats"
+  categoryHref="/learn/audio/"
+  datePublished="2024-01-16T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="lossy-vs-lossless">Lossy vs Lossless Compression</h2>
+  <p>The debate between MP3 and WAV boils down to one fundamental concept in digital media: compression.</p>
+  <ul>
+    <li><strong>WAV is Lossless and Uncompressed:</strong> It keeps all the original audio data. It is a perfect, 1:1 digital replica of the studio recording. </li>
+    <li><strong>MP3 is Lossy:</strong> To make the file size smaller, the MP3 encoder throws away audio data that the human ear struggles to hear (like extreme high frequencies or very quiet sounds masked by loud ones). This "loss" is permanent.</li>
+  </ul>
+
+  <h2 id="comparison">Comparison</h2>
+  
+  <ComparisonTable 
+    caption="MP3 vs WAV Quick Comparison"
+    headers={['Feature', 'MP3', 'WAV']}
+    rows={[
+      ['Compression Type', 'Lossy (Throws away data)', 'Uncompressed (Keeps all data)'],
+      ['Audio Quality', 'Good (Perfect for everyday listening)', 'Perfect (Studio reference quality)'],
+      ['File Size', 'Small (~5MB per song)', 'Massive (~50MB per song)'],
+      ['Best For', 'Streaming, Phones, USB Drives', 'Music Production, Video Editing']
+    ]}
+  />
+
+  <h2 id="which-to-choose">Which Should You Choose?</h2>
+  <p>If you are downloading a podcast, an audiobook, or music to listen to on your phone during a commute, <strong>choose MP3</strong>. The file size is tiny, it plays on everything, and you won't notice the missing audio data on standard headphones.</p>
+  <p>If you are downloading a sound effect to use in a video editing project, or if you are an audio professional archiving a recording, <strong>choose WAV</strong>. You want the highest possible quality source file before you begin editing and exporting.</p>
+</ArticleLayout>

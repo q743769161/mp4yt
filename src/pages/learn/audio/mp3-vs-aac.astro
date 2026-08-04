@@ -1,0 +1,63 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Audio Formats', href: '/learn/audio/' },
+  { name: 'MP3 vs AAC', href: '/learn/audio/mp3-vs-aac/' },
+];
+
+const tocItems = [
+  { text: 'Introduction', slug: 'introduction' },
+  { text: 'What is MP3?', slug: 'what-is-mp3' },
+  { text: 'What is AAC?', slug: 'what-is-aac' },
+  { text: 'Which is Better?', slug: 'which-is-better' }
+];
+
+const relatedArticles = [
+  {
+    title: 'What Is MP4?',
+    href: '/learn/video-formats/what-is-mp4/',
+    category: 'Video Formats',
+    description: 'Learn about the video container format often associated with AAC.'
+  }
+];
+---
+
+<ArticleLayout
+  title="MP3 vs AAC: Which Audio Format Is Better?"
+  description="Compare MP3 and AAC on quality, compatibility, file size, and use cases. Find out which audio format to choose."
+  canonicalUrl="/learn/audio/mp3-vs-aac/"
+  category="Audio Formats"
+  categoryHref="/learn/audio/"
+  datePublished="2023-11-06T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="introduction">Introduction</h2>
+  <p>When downloading audio tracks or extracting sound from a video, you'll most often choose between <strong>MP3</strong> and <strong>AAC</strong>. Both are "lossy" audio compression formats, meaning they discard some audio data to keep file sizes small, but one is technically superior to the other.</p>
+
+  <h2 id="what-is-mp3">What is MP3?</h2>
+  <p>MP3 (MPEG-1 Audio Layer III) is the most famous audio format in the world. It revolutionized digital music in the late 90s and early 2000s. Its primary strength today is 100% universal compatibility—if a device plays digital audio, it plays MP3.</p>
+
+  <h2 id="what-is-aac">What is AAC?</h2>
+  <p>AAC (Advanced Audio Coding) was designed as the successor to MP3. It achieves better sound quality than MP3 at the same bitrates (or the same quality at lower bitrates). It is the default audio format for YouTube, Apple Music, and iOS devices.</p>
+
+  <ComparisonTable 
+    caption="MP3 vs AAC Comparison"
+    headers={['Feature', 'MP3', 'AAC']}
+    rows={[
+      ['Sound Quality', 'Good', 'Better (especially at lower bitrates)'],
+      ['File Size', 'Standard', 'Slightly smaller for the same quality'],
+      ['Compatibility', 'Universal (100% of devices)', 'Extremely high (99% of modern devices)'],
+      ['Default for', 'Older hardware, general use', 'YouTube, Apple devices, MP4 videos']
+    ]}
+  />
+
+  <h2 id="which-is-better">Which Should You Choose?</h2>
+  <p>If you have the choice, <strong>always choose AAC</strong>. It provides better sound quality at the same file size. Only choose MP3 if you are playing the audio on a very old device (like a vintage car stereo or a 20-year-old MP3 player) that lacks AAC support.</p>
+</ArticleLayout>

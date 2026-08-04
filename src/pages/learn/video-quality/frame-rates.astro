@@ -1,0 +1,69 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Quality', href: '/learn/video-quality/' },
+  { name: 'Frame Rates Explained', href: '/learn/video-quality/frame-rates/' },
+];
+
+const tocItems = [
+  { text: 'What is Frame Rate (FPS)?', slug: 'what-is-fps' },
+  { text: '24 FPS: The Cinematic Standard', slug: '24fps' },
+  { text: '30 FPS: TV and Web Standard', slug: '30fps' },
+  { text: '60 FPS: Gaming and Action', slug: '60fps' },
+  { text: 'Which FPS Should You Download?', slug: 'which-to-choose' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Resolutions Explained',
+    href: '/learn/video-quality/resolutions-explained/',
+    category: 'Video Quality',
+    description: 'Understand the difference between 1080p and 4K.'
+  }
+];
+---
+
+<ArticleLayout
+  title="Video Frame Rates Explained: 24fps vs 30fps vs 60fps"
+  description="Understand the difference between video frame rates (fps), how they affect motion blur, and which one you should choose."
+  canonicalUrl="/learn/video-quality/frame-rates/"
+  category="Video Quality"
+  categoryHref="/learn/video-quality/"
+  datePublished="2024-01-13T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="what-is-fps">What is Frame Rate (FPS)?</h2>
+  <p>Video is essentially a series of still images played sequentially at high speed to create the illusion of motion. <strong>Frame rate</strong>, measured in Frames Per Second (FPS), dictates how many of these still images are displayed every second.</p>
+  <p>The higher the frame rate, the smoother the motion appears. However, a higher frame rate isn't always "better"—different frame rates evoke different feelings and are used for different types of content.</p>
+
+  <h2 id="24fps">24 FPS: The Cinematic Standard</h2>
+  <p>Since the late 1920s, 24fps has been the global standard for cinema. It provides just enough frames for smooth motion while retaining a distinct "motion blur" that our brains associate with big-budget movies. If you watch a blockbuster film, it is almost certainly playing at 24fps. It feels natural, dramatic, and "filmic".</p>
+
+  <h2 id="30fps">30 FPS: TV and Web Standard</h2>
+  <p>30fps (often historically 29.97fps in North America) is the standard for live television broadcasts, news, soap operas, and the vast majority of web video (like standard YouTube videos or Instagram reels). It provides slightly smoother motion than film without looking unnaturally fast.</p>
+
+  <h2 id="60fps">60 FPS: Gaming and Action</h2>
+  <p>60fps is a high frame rate. Because it displays twice as much visual information per second as 30fps, motion appears incredibly smooth and hyper-realistic. </p>
+  <p>It is the standard for video games (where responsiveness is key) and is often used in live sports broadcasts (to track fast-moving balls and athletes). However, when applied to a dramatic movie, 60fps can cause the "soap opera effect," making the film look cheap or like a home video.</p>
+  
+  <ComparisonTable 
+    caption="Common Frame Rates Overview"
+    headers={['Frame Rate', 'Best Used For', 'Look & Feel']}
+    rows={[
+      ['24 FPS', 'Movies, Cinematic content, High-end TV', 'Dramatic, natural motion blur, "Filmic"'],
+      ['30 FPS', 'Vlogs, News, Standard web video', 'Standard, realistic, easy on bandwidth'],
+      ['60 FPS', 'Video game captures, Live sports, VR', 'Hyper-smooth, intense clarity, fast motion']
+    ]}
+  />
+
+  <h2 id="which-to-choose">Which FPS Should You Download?</h2>
+  <p>If you are downloading a movie or cinematic short, stick to the original frame rate (usually 24fps or 30fps). Downloading a movie that has been artificially upscaled to 60fps will ruin the cinematic feel and waste storage space.</p>
+  <p>If you are downloading a video game walkthrough or a sports highlight, downloading the 60fps version (if available) will provide a significantly better viewing experience.</p>
+</ArticleLayout>

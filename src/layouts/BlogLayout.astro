@@ -1,0 +1,105 @@
+---
+import Layout from './Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ShareButtons from '../components/ShareButtons.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  datePublished: string;
+  dateModified?: string;
+  readTime?: string;
+  breadcrumbName?: string;
+}
+
+const SITE_URL = 'https://mp4yt.com';
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  datePublished,
+  dateModified = datePublished,
+  readTime = '5 min read',
+  breadcrumbName = title,
+} = Astro.props;
+
+// Build schemas
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "mp4yt", "item": "https://mp4yt.com" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://mp4yt.com/blog/" },
+    { "@type": "ListItem", "position": 3, "name": breadcrumbName, "item": canonicalUrl.startsWith('http') ? canonicalUrl : `${SITE_URL}${canonicalUrl}` }
+  ]
+};
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": description,
+  "author": { "@type": "Organization", "name": "mp4yt" },
+  "publisher": { "@type": "Organization", "name": "mp4yt", "logo": { "@type": "ImageObject", "url": "https://mp4yt.com/logo.png" } },
+  "datePublished": datePublished,
+  "dateModified": dateModified,
+  "mainEntityOfPage": canonicalUrl.startsWith('http') ? canonicalUrl : `${SITE_URL}${canonicalUrl}`
+};
+---
+
+<Layout
+  title={`${title} | mp4yt`}
+  description={description}
+  canonicalUrl={canonicalUrl}
+>
+  <Navbar />
+  <main id="main-content">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+    <article class="blog-article">
+      <div class="page-container blog-container">
+        <header class="blog-header">
+          <span class="eyebrow">Blog</span>
+          <h1 class="display-lg">{title}</h1>
+          <p class="body-lg blog-subtitle">{description}</p>
+          <div class="blog-meta">
+            <time datetime={datePublished}>
+              {new Date(datePublished).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            <span>·</span>
+            <span>{readTime}</span>
+          </div>
+        </header>
+
+        <div class="blog-content">
+          <slot />
+          <ShareButtons />
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .blog-article { background-color: var(--color-canvas); padding: var(--sp-section) var(--sp-lg) var(--sp-5xl); }
+  .blog-container { max-width: 720px; }
+  .blog-header { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-3xl); }
+  .blog-header h1 { margin: 0; color: var(--color-ink); }
+  .blog-subtitle { margin: 0; color: var(--color-body); }
+  .blog-meta { display: flex; align-items: center; gap: var(--sp-xs); font-family: var(--font-mono); font-size: 12px; color: var(--color-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .blog-content { display: flex; flex-direction: column; gap: var(--sp-lg); }
+  .blog-content :global(h2) { margin: var(--sp-md) 0 0 0; color: var(--color-ink); font-family: var(--font-headline); font-size: 22px; font-weight: 800; text-transform: uppercase; }
+  .blog-content :global(h3) { margin: var(--sp-sm) 0 0 0; color: var(--color-ink); font-family: var(--font-headline); font-size: 18px; font-weight: 700; }
+  .blog-content :global(p) { margin: 0; color: var(--color-body); line-height: 1.8; font-size: 16px; }
+  .blog-content :global(ol), .blog-content :global(ul) { margin: 0; padding-left: var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-sm); color: var(--color-body); font-size: 16px; line-height: 1.8; }
+  .blog-content :global(a) { color: var(--color-ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .blog-content :global(a:hover) { background-color: var(--color-primary); color: var(--color-on-primary); text-decoration: none; padding: 1px 4px; margin: -1px -4px; }
+  .blog-content :global(.blog-cta) { margin-top: var(--sp-xl); padding: var(--sp-xl); border: var(--border); text-align: center; }
+  @media (max-width: 768px) { .blog-article { padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl); } }
+  @media (max-width: 480px) { .blog-article { padding: var(--sp-3xl) var(--sp-sm) var(--sp-2xl); } .blog-content :global(h2) { font-size: 18px; } .blog-content :global(p), .blog-content :global(ol), .blog-content :global(ul) { font-size: 15px; } }
+</style>

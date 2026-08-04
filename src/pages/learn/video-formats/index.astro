@@ -1,0 +1,18 @@
+---
+import CategoryLayout from '../../../layouts/CategoryLayout.astro';
+
+const articles = [
+  { title: 'What Is MP4? Everything You Need to Know', href: '/learn/video-formats/what-is-mp4/', description: 'A comprehensive guide to the MP4 container format — how it works, why it\'s universal, and when to use it.' },
+  { title: 'MP4 vs WebM: Which Format Should You Download?', href: '/learn/video-formats/mp4-vs-webm/', description: 'Compare MP4 and WebM side by side — compatibility, file size, quality, and the best choice for different use cases.' },
+  { title: 'MP4 vs MKV: Quality vs Compatibility', href: '/learn/video-formats/mp4-vs-mkv/', description: 'MKV offers maximum flexibility while MP4 offers maximum compatibility. Learn when to choose each format.' },
+];
+---
+
+<CategoryLayout
+  title="Video Formats Explained — MP4, WebM, MKV & More"
+  description="Understand the most popular video formats: MP4, WebM, MKV, AVI, and MOV. Compare features, compatibility, and choose the right format for your downloads."
+  canonicalUrl="https://mp4yt.com/learn/video-formats/"
+  categoryName="Video Formats"
+  categoryIcon="🎬"
+  articles={articles}
+/>

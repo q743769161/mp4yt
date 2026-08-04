@@ -1,0 +1,54 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Quality', href: '/learn/video-quality/' },
+  { name: 'Resolutions Explained', href: '/learn/video-quality/resolutions-explained/' },
+];
+
+const tocItems = [
+  { text: 'What is Resolution?', slug: 'what-is-resolution' },
+  { text: 'Standard Resolutions', slug: 'standard-resolutions' },
+  { text: 'Which Resolution to Choose?', slug: 'which-to-choose' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Understanding Bitrate',
+    href: '/learn/video-quality/understanding-bitrate/',
+    category: 'Video Quality',
+    description: 'Learn how bitrate affects video quality and file size.'
+  }
+];
+---
+
+<ArticleLayout
+  title="Video Resolutions Explained: 360p to 4K"
+  description="From 360p to 4K UHD — understand what each resolution means, how many pixels it has, and when to use each one."
+  canonicalUrl="/learn/video-quality/resolutions-explained/"
+  category="Video Quality"
+  categoryHref="/learn/video-quality/"
+  datePublished="2023-11-04T08:00:00Z"
+  readTime="5 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="what-is-resolution">What is Video Resolution?</h2>
+  <p>Video resolution refers to the number of distinct pixels in each dimension that can be displayed. It is usually quoted as width × height, with the units in pixels (e.g., 1920×1080). A higher resolution means more pixels, which translates to a sharper and more detailed image.</p>
+
+  <h2 id="standard-resolutions">Standard Resolutions (360p to 4K)</h2>
+  <ul>
+    <li><strong>360p (Standard Definition):</strong> 640×360 pixels. Suitable for very slow internet connections or old mobile devices.</li>
+    <li><strong>480p (DVD Quality):</strong> 854×480 pixels. The standard for DVDs. Good enough for casual viewing on small screens.</li>
+    <li><strong>720p (HD):</strong> 1280×720 pixels. The entry-level high definition. Great for web streaming and most mobile devices.</li>
+    <li><strong>1080p (Full HD):</strong> 1920×1080 pixels. The standard for modern web video, Blu-rays, and standard TVs. Offers a great balance of quality and file size.</li>
+    <li><strong>1440p (Quad HD / 2K):</strong> 2560×1440 pixels. Popular among PC gamers and higher-end smartphones.</li>
+    <li><strong>2160p (4K UHD):</strong> 3840×2160 pixels. Offers four times the pixels of 1080p. Best for large 4K TVs and future-proofing your downloads.</li>
+  </ul>
+
+  <h2 id="which-to-choose">Which Resolution to Choose When Downloading?</h2>
+  <p>When using a video downloader, choose <strong>1080p</strong> for the best balance of visual fidelity and manageable file size. Only choose <strong>4K</strong> if you plan to watch the video on a large 4K display and have plenty of storage space.</p>
+</ArticleLayout>

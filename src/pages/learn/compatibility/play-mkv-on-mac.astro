@@ -1,0 +1,47 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Compatibility', href: '/learn/compatibility/' },
+  { name: 'How to Play MKV on Mac', href: '/learn/compatibility/play-mkv-on-mac/' },
+];
+
+const tocItems = [
+  { text: 'Why QuickTime Fails', slug: 'why-quicktime-fails' },
+  { text: 'Solution 1: Use VLC Media Player', slug: 'solution-1-vlc' },
+  { text: 'Solution 2: Use IINA', slug: 'solution-2-iina' }
+];
+
+const relatedArticles = [
+  {
+    title: 'MP4 vs MKV',
+    href: '/learn/video-formats/mp4-vs-mkv/',
+    category: 'Video Formats',
+    description: 'Learn why MKV files are different from MP4s.'
+  }
+];
+---
+
+<ArticleLayout
+  title="How to Play MKV Files on Mac: 2 Easy Solutions"
+  description="Mac's default QuickTime player cannot open MKV files. Here are the two best, free, third-party video players to solve this issue."
+  canonicalUrl="/learn/compatibility/play-mkv-on-mac/"
+  category="Compatibility"
+  categoryHref="/learn/compatibility/"
+  datePublished="2024-01-19T08:00:00Z"
+  readTime="3 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="why-quicktime-fails">Why QuickTime Cannot Open MKV</h2>
+  <p>If you download an `.mkv` file and double-click it on a Mac, you will get an error message. Apple's default video player, QuickTime, only supports a limited number of container formats (like MP4 and MOV). It fundamentally lacks the ability to parse the Matroska (MKV) container.</p>
+
+  <h2 id="solution-1-vlc">Solution 1: Use VLC Media Player (The Classic)</h2>
+  <p>The most universal solution is to download <strong>VLC Media Player</strong>. It is free, open-source, and has been the gold standard for playing obscure video formats for two decades. VLC includes its own internal codecs, meaning it can play virtually anything you throw at it, including MKV files with multiple audio tracks and subtitles.</p>
+
+  <h2 id="solution-2-iina">Solution 2: Use IINA (The Modern Mac Player)</h2>
+  <p>While VLC is powerful, its user interface feels dated on modern Macs. <strong>IINA</strong> is a modern, open-source video player built specifically for macOS. It features a beautiful, native UI, supports picture-in-picture, Touch Bar integration, and, just like VLC, plays MKV files natively without any issues.</p>
+</ArticleLayout>

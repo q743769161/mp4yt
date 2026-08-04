@@ -1,0 +1,56 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Guides', href: '/learn/guides/' },
+  { name: 'How to Extract Audio', href: '/learn/guides/extract-audio-from-video/' },
+];
+
+const tocItems = [
+  { text: 'Using an Online Downloader', slug: 'online-downloader' },
+  { text: 'Using VLC Media Player', slug: 'vlc-method' },
+  { text: 'Using Dedicated Software', slug: 'dedicated-software' }
+];
+
+const relatedArticles = [
+  {
+    title: 'MP3 vs AAC',
+    href: '/learn/audio/mp3-vs-aac/',
+    category: 'Audio Formats',
+    description: 'Decide which audio format to extract to.'
+  }
+];
+---
+
+<ArticleLayout
+  title="How to Extract Audio from a Video File (3 Methods)"
+  description="Learn how to pull the MP3 or AAC audio track out of an MP4 video file using online tools, VLC, or dedicated software."
+  canonicalUrl="/learn/guides/extract-audio-from-video/"
+  category="Guides"
+  categoryHref="/learn/guides/"
+  datePublished="2024-01-21T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <p>Sometimes you download a music video, an interview, or a podcast, but you only want to listen to the audio track on your phone. Here are three ways to extract the audio from an existing video file.</p>
+
+  <h2 id="online-downloader">Method 1: Use an Online Downloader (Easiest)</h2>
+  <p>If you haven't downloaded the video yet, you can skip the extraction step entirely. Simply use a video downloader like mp4yt, paste the URL, and select the <strong>"Audio Only"</strong> or <strong>"MP3"</strong> option from the download menu. The server will extract the audio track directly from the platform's CDN, saving you time and bandwidth.</p>
+
+  <h2 id="vlc-method">Method 2: Use VLC Media Player (Offline)</h2>
+  <p>If you already have the MP4 file on your hard drive, you can use VLC to extract the audio.</p>
+  <ol>
+    <li>Open VLC and go to <strong>Media > Convert / Save</strong>.</li>
+    <li>Click <strong>Add</strong> and select your video file.</li>
+    <li>Click the <strong>Convert / Save</strong> button at the bottom.</li>
+    <li>In the "Profile" dropdown, select <strong>Audio - MP3</strong> or <strong>Audio - AAC</strong>.</li>
+    <li>Choose a destination file name (make sure it ends in `.mp3`), and click <strong>Start</strong>.</li>
+  </ol>
+
+  <h2 id="dedicated-software">Method 3: Use Dedicated Software (Highest Quality)</h2>
+  <p>If you want to extract the audio track losslessly (without re-encoding it and losing quality), you can use a free tool like <strong>Shutter Encoder</strong> or <strong>FFmpeg</strong>. These tools can strip the video track away and leave you with the exact, original audio file (usually AAC or Opus) in seconds.</p>
+</ArticleLayout>

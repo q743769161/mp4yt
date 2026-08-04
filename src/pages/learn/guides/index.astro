@@ -1,0 +1,14 @@
+---
+import CategoryLayout from '../../../layouts/CategoryLayout.astro';
+const articles = [
+  { title: 'Safe Downloading Practices', href: '/learn/guides/safe-downloading-practices/', description: 'Best practices for downloading videos safely from the internet. How to spot scams, avoid malware, and protect your privacy.' },
+];
+---
+<CategoryLayout
+  title="Video Downloading Guides & Best Practices"
+  description="Expert guides on downloading videos, optimizing speed, choosing the right formats, and managing your downloaded media library."
+  canonicalUrl="https://mp4yt.com/learn/guides/"
+  categoryName="Guides"
+  categoryIcon="📖"
+  articles={articles}
+/>

@@ -84,4 +84,4 @@ Disallow: /
 # ═══════════════════════════════════════════════════════
 # Sitemap location (critical for crawl discovery)
 # ═══════════════════════════════════════════════════════
-Sitemap: https://mp4yt.com/sitemap.xml
+Sitemap: https://mp4yt.com/sitemap-index.xml

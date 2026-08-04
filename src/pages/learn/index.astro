@@ -1,0 +1,347 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+];
+
+const categories = [
+  {
+    icon: '🎬',
+    title: 'Video Formats',
+    desc: 'Understand MP4, WebM, MKV, AVI, and MOV. Learn the differences and choose the right format for every use case.',
+    href: '/learn/video-formats/',
+    articles: [
+      { title: 'What Is MP4?', href: '/learn/video-formats/what-is-mp4/' },
+      { title: 'MP4 vs WebM', href: '/learn/video-formats/mp4-vs-webm/' },
+      { title: 'MP4 vs MKV', href: '/learn/video-formats/mp4-vs-mkv/' },
+    ]
+  },
+  {
+    icon: '📺',
+    title: 'Video Quality',
+    desc: 'Resolutions from 360p to 4K, bitrate, frame rate, and compression — understand what makes video look good.',
+    href: '/learn/video-quality/',
+    articles: [
+      { title: 'Resolutions Explained', href: '/learn/video-quality/resolutions-explained/' },
+      { title: 'Understanding Bitrate', href: '/learn/video-quality/understanding-bitrate/' },
+    ]
+  },
+  {
+    icon: '🎵',
+    title: 'Audio Formats',
+    desc: 'MP3, AAC, FLAC, Opus — pick the right audio format for music, podcasts, and offline listening.',
+    href: '/learn/audio/',
+    articles: [
+      { title: 'MP3 vs AAC', href: '/learn/audio/mp3-vs-aac/' },
+    ]
+  },
+  {
+    icon: '⚙️',
+    title: 'Codecs',
+    desc: 'H.264, H.265, VP9, AV1 — the engines behind video encoding. Learn how they affect quality and compatibility.',
+    href: '/learn/codecs/',
+    articles: [
+      { title: 'What Is a Codec?', href: '/learn/codecs/what-is-a-codec/' },
+      { title: 'H.264 vs H.265', href: '/learn/codecs/h264-vs-h265/' },
+    ]
+  },
+  {
+    icon: '📱',
+    title: 'Compatibility',
+    desc: 'Which formats work on which devices and browsers. No more playback issues.',
+    href: '/learn/compatibility/',
+    articles: []
+  },
+  {
+    icon: '📖',
+    title: 'Guides',
+    desc: 'Best practices for downloading, choosing formats, optimizing speed, and managing your video library.',
+    href: '/learn/guides/',
+    articles: [
+      { title: 'Safe Downloading Practices', href: '/learn/guides/safe-downloading-practices/' },
+    ]
+  },
+  {
+    icon: '🔧',
+    title: 'Troubleshooting',
+    desc: 'Common errors, playback issues, and failed downloads — find solutions fast.',
+    href: '/learn/troubleshooting/',
+    articles: [
+      { title: 'Common Download Errors', href: '/learn/troubleshooting/common-errors/' },
+    ]
+  },
+  {
+    icon: '🔒',
+    title: 'Security',
+    desc: 'Safe downloading practices, privacy information, and how to avoid malware.',
+    href: '/learn/security/',
+    articles: []
+  },
+];
+---
+
+<Layout
+  title="Video Knowledge Hub — Learn About Formats, Quality & Codecs | mp4yt"
+  description="Expert guides on video formats, resolutions, codecs, audio, and downloading best practices. Free educational resources from the mp4yt team."
+  canonicalUrl="https://mp4yt.com/learn/"
+  breadcrumbItems={breadcrumbs}
+>
+  <Navbar />
+  <main id="main-content">
+    <section class="hub-hero">
+      <div class="page-container hub-hero-content">
+        <Breadcrumbs items={breadcrumbs} />
+        <span class="eyebrow">VIDEO KNOWLEDGE HUB</span>
+        <h1 class="display-xl hub-hero-title">
+          EVERYTHING YOU NEED TO KNOW ABOUT VIDEO.
+        </h1>
+        <p class="body-lg hub-hero-subtitle">
+          Expert guides on video formats, resolutions, codecs, audio extraction, and
+          downloading best practices. Free, in-depth, no fluff.
+        </p>
+      </div>
+    </section>
+
+    <section class="hub-categories">
+      <div class="page-container">
+        {categories.map(cat => (
+          <div class="hub-category-block">
+            <div class="hub-category-header">
+              <span class="hub-category-icon" aria-hidden="true">{cat.icon}</span>
+              <div class="hub-category-header-text">
+                <h2 class="display-md"><a href={cat.href} class="hub-category-link">{cat.title}</a></h2>
+                <p class="body-sm hub-category-desc">{cat.desc}</p>
+              </div>
+            </div>
+            {cat.articles.length > 0 && (
+              <ul class="hub-category-articles" role="list">
+                {cat.articles.map(article => (
+                  <li>
+                    <a href={article.href} class="hub-article-link">{article.title} →</a>
+                  </li>
+                ))}
+                <li>
+                  <a href={cat.href} class="hub-article-link hub-article-link-all">View all {cat.title.toLowerCase()} guides →</a>
+                </li>
+              </ul>
+            )}
+            {cat.articles.length === 0 && (
+              <p class="body-sm hub-coming-soon">Guides coming soon. <a href={cat.href}>View category →</a></p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="hub-cta-band">
+      <div class="page-container hub-cta-inner">
+        <h2 class="display-md">HAVE A QUESTION WE HAVEN'T COVERED?</h2>
+        <p class="body-md">We're constantly expanding our knowledge base. Check the blog for the latest articles or contact us with suggestions.</p>
+        <div class="hub-cta-buttons">
+          <a href="/blog/" class="btn-secondary">Read the Blog →</a>
+          <a href="/" class="btn-primary">Download a Video →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .hub-hero {
+    background-color: var(--color-canvas);
+    padding: var(--sp-section) var(--sp-lg) var(--sp-4xl);
+    border-bottom: var(--border);
+  }
+
+  .hub-hero-content {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+  }
+
+  .hub-hero-title {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .hub-hero-subtitle {
+    margin: 0;
+    color: var(--color-body);
+    max-width: 600px;
+  }
+
+  .hub-categories {
+    background-color: var(--color-canvas);
+    padding: var(--sp-4xl) var(--sp-lg);
+  }
+
+  .hub-category-block {
+    border-bottom: var(--border);
+    padding: var(--sp-xl) 0;
+  }
+
+  .hub-category-block:first-child {
+    padding-top: 0;
+  }
+
+  .hub-category-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-md);
+    margin-bottom: var(--sp-md);
+  }
+
+  .hub-category-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-canvas-soft-2);
+    border: var(--border);
+    flex-shrink: 0;
+  }
+
+  .hub-category-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xxs);
+  }
+
+  .hub-category-header-text h2 {
+    margin: 0;
+  }
+
+  .hub-category-link {
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: color 0.1s ease;
+  }
+
+  .hub-category-link:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .hub-category-desc {
+    margin: 0;
+    color: var(--color-body);
+    line-height: 1.5;
+  }
+
+  .hub-category-articles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xxs);
+    margin-left: 56px;
+  }
+
+  .hub-article-link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-body);
+    text-decoration: none;
+    padding: var(--sp-xxs) 0;
+    display: inline-block;
+    transition: color 0.1s ease;
+  }
+
+  .hub-article-link:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .hub-article-link-all {
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .hub-coming-soon {
+    margin: 0;
+    margin-left: 56px;
+    color: var(--color-mute);
+    font-style: italic;
+  }
+
+  .hub-coming-soon a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .hub-cta-band {
+    background-color: var(--color-canvas);
+    padding: var(--sp-4xl) var(--sp-lg);
+    border-top: var(--border);
+  }
+
+  .hub-cta-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-sm);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hub-cta-inner h2 {
+    margin: 0;
+  }
+
+  .hub-cta-inner p {
+    margin: 0;
+    color: var(--color-body);
+  }
+
+  .hub-cta-buttons {
+    display: flex;
+    gap: var(--sp-sm);
+    margin-top: var(--sp-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .hub-hero {
+      padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl);
+    }
+    .hub-categories {
+      padding: var(--sp-3xl) var(--sp-md);
+    }
+    .hub-category-articles {
+      margin-left: 0;
+    }
+    .hub-coming-soon {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hub-hero {
+      padding: var(--sp-3xl) var(--sp-sm) var(--sp-xl);
+    }
+    .hub-categories {
+      padding: var(--sp-xl) var(--sp-sm);
+    }
+    .hub-cta-band {
+      padding: var(--sp-xl) var(--sp-sm);
+    }
+  }
+</style>

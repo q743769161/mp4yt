@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
     <div class="footer-brand">
       <a href="/" class="footer-logo" aria-label="mp4yt home">
         <div class="footer-logo-mark">
-          <img src="/logo.png" width="20" height="20" alt="mp4yt logo" />
+          <img src="/logo.png" width="20" height="20" alt="mp4yt logo" loading="lazy" />
         </div>
         <span class="footer-logo-text">MP4YT</span>
       </a>
@@ -31,11 +31,27 @@ const year = new Date().getFullYear();
         <li><a href="#features" class="footer-link">Features</a></li>
         <li><a href="#how-it-works" class="footer-link">How it works</a></li>
         <li><a href="#platforms" class="footer-link">Platforms</a></li>
+        <li><a href="/blog/" class="footer-link">Blog</a></li>
         <li><a href="#faq" class="footer-link">FAQ</a></li>
       </ul>
     </div>
 
-    <!-- Col 3: Platforms -->
+    <!-- Col 3: Learn -->
+    <div class="footer-col">
+      <h3 class="eyebrow footer-col-head">LEARN</h3>
+      <ul class="footer-links" role="list">
+        <li><a href="/learn/" class="footer-link">All Topics</a></li>
+        <li><a href="/learn/video-formats/" class="footer-link">Video Formats</a></li>
+        <li><a href="/learn/video-quality/" class="footer-link">Video Quality</a></li>
+        <li><a href="/learn/audio/" class="footer-link">Audio</a></li>
+        <li><a href="/learn/codecs/" class="footer-link">Codecs</a></li>
+        <li><a href="/learn/guides/" class="footer-link">Guides</a></li>
+        <li><a href="/learn/troubleshooting/" class="footer-link">Troubleshooting</a></li>
+        <li><a href="/learn/security/" class="footer-link">Security</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 4: Platforms -->
     <div class="footer-col">
       <h3 class="eyebrow footer-col-head">PLATFORMS</h3>
       <ul class="footer-links" role="list">
@@ -53,7 +69,7 @@ const year = new Date().getFullYear();
       </ul>
     </div>
 
-    <!-- Col 4: Legal & Resources -->
+    <!-- Col 5: Legal & Resources -->
     <div class="footer-col">
       <h3 class="eyebrow footer-col-head">LEGAL</h3>
       <ul class="footer-links" role="list">
@@ -66,6 +82,7 @@ const year = new Date().getFullYear();
           >
         </li>
         <li><a href="/dmca/" class="footer-link">DMCA</a></li>
+        <li><a href="/editorial-policy/" class="footer-link">Editorial Policy</a></li>
         <li><a href="/about-us/" class="footer-link">About Us</a></li>
         <li><a href="/contact-us/" class="footer-link">Contact Us</a></li>
         <li>
@@ -115,7 +132,7 @@ const year = new Date().getFullYear();
 
   .footer-inner {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     gap: var(--sp-4xl);
     padding-top: var(--sp-4xl);
     padding-bottom: var(--sp-4xl);

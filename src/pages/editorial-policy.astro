@@ -1,0 +1,173 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Editorial Policy - mp4yt Knowledge Hub"
+  description="Our editorial policy, content creation process, and commitment to accuracy at the mp4yt video knowledge hub."
+  canonicalUrl="https://mp4yt.com/editorial-policy/"
+>
+  <Navbar />
+  <main id="main-content">
+    <section class="policy-hero">
+      <div class="mesh-bg" aria-hidden="true"></div>
+      <div class="noise-overlay" aria-hidden="true"></div>
+      <div class="page-container policy-hero-content">
+        <span class="eyebrow">Legal & Trust</span>
+        <h1 class="display-xl policy-title">Editorial Policy</h1>
+        <p class="body-lg policy-subtitle">
+          Our commitment to accuracy, objectivity, and expert knowledge.
+        </p>
+      </div>
+    </section>
+
+    <section class="policy-body">
+      <div class="page-container policy-container">
+        
+        <div class="policy-content">
+          <p>The mp4yt Knowledge Hub is designed to be the most comprehensive, accurate, and easy-to-understand resource for video downloading, formats, codecs, and digital media processing on the internet. To achieve this, we adhere to a strict editorial policy.</p>
+
+          <h2 class="display-sm">1. Content Creation & Fact-Checking</h2>
+          <p>All guides, comparisons, and troubleshooting articles published on mp4yt are written by technical experts with direct experience in digital media, video encoding, and web technologies. Every article undergoes a rigorous fact-checking process before publication to ensure:</p>
+          <ul>
+            <li>Technical definitions (like codecs and bitrates) are accurate.</li>
+            <li>Software and hardware compatibility information is up-to-date.</li>
+            <li>Troubleshooting steps are tested and verified.</li>
+          </ul>
+
+          <h2 class="display-sm">2. Editorial Independence</h2>
+          <p>mp4yt maintains strict editorial independence. We do not accept payment in exchange for positive coverage of specific video formats, software, or platforms. Our recommendations (e.g., choosing AAC over MP3, or H.265 over H.264) are based entirely on technical merit and objective testing.</p>
+
+          <h2 class="display-sm">3. Content Update Schedule</h2>
+          <p>Technology moves fast. Video codecs evolve, and browser compatibility changes. We are committed to keeping our knowledge hub current. Articles are reviewed periodically, and the <strong>"Updated"</strong> date at the top of an article indicates when the content was last verified or modified to reflect new technical realities.</p>
+
+          <h2 class="display-sm">4. Corrections Policy</h2>
+          <p>If you spot a technical inaccuracy in any of our guides, please <a href="/contact-us/">contact us</a>. Our team will review the claim and, if an error is found, we will promptly correct the article and note the correction.</p>
+
+          <h2 class="display-sm">5. Originality</h2>
+          <p>All content on the mp4yt Knowledge Hub is 100% original. We do not copy, scrape, or plagiarize content from other websites. When quoting external standards (like MPEG specifications) or referencing compatibility tables, we provide the information in our own words and context.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .policy-hero {
+    position: relative;
+    background-color: var(--color-primary);
+    padding: var(--sp-section) var(--sp-lg);
+    border-bottom: var(--border);
+    overflow: hidden;
+  }
+
+  .mesh-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 0, 0, 0.2) 0px, transparent 50%);
+    opacity: 0.8;
+  }
+
+  .noise-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+  }
+
+  .policy-hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+  }
+
+  .policy-hero-content .eyebrow {
+    color: var(--color-on-primary);
+    opacity: 0.8;
+  }
+
+  .policy-title {
+    margin: 0;
+    color: var(--color-on-primary);
+  }
+
+  .policy-subtitle {
+    margin: 0;
+    color: var(--color-on-primary);
+    opacity: 0.9;
+    max-width: 600px;
+  }
+
+  .policy-body {
+    background-color: var(--color-canvas);
+    padding: var(--sp-section) var(--sp-lg);
+  }
+
+  .policy-container {
+    max-width: 800px;
+  }
+
+  .policy-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+  }
+
+  .policy-content p, .policy-content ul {
+    color: var(--color-body);
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .policy-content ul {
+    padding-left: var(--sp-lg);
+  }
+
+  .policy-content h2 {
+    color: var(--color-ink);
+    margin: var(--sp-xl) 0 var(--sp-xs) 0;
+  }
+
+  .policy-content a {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  .policy-content a:hover {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    text-decoration: none;
+    padding: 1px 4px;
+    margin: -1px -4px;
+  }
+
+  @media (max-width: 768px) {
+    .policy-hero { padding: var(--sp-4xl) var(--sp-md) var(--sp-3xl); }
+    .policy-body { padding: var(--sp-4xl) var(--sp-md); }
+  }
+
+  @media (max-width: 480px) {
+    .policy-hero { padding: var(--sp-3xl) var(--sp-sm) var(--sp-xl); }
+    .policy-body { padding: var(--sp-3xl) var(--sp-sm); }
+    .policy-content p, .policy-content ul { font-size: 15px; }
+  }
+</style>

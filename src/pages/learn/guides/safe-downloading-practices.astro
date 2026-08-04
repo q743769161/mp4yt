@@ -1,0 +1,56 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Guides', href: '/learn/guides/' },
+  { name: 'Safe Downloading Practices', href: '/learn/guides/safe-downloading-practices/' },
+];
+
+const tocItems = [
+  { text: '1. Avoid Shady Software', slug: 'avoid-shady-software' },
+  { text: '2. Check File Extensions', slug: 'check-extensions' },
+  { text: '3. Beware of Fake Buttons', slug: 'fake-buttons' },
+  { text: '4. Respect Copyright', slug: 'respect-copyright' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Common Download Errors',
+    href: '/learn/troubleshooting/common-errors/',
+    category: 'Troubleshooting',
+    description: 'Learn how to fix issues when a download fails.'
+  }
+];
+---
+
+<ArticleLayout
+  title="Safe Downloading Practices: How to Avoid Malware"
+  description="Best practices for downloading videos safely from the internet. How to spot scams, avoid malware, and protect your privacy."
+  canonicalUrl="/learn/guides/safe-downloading-practices/"
+  category="Guides"
+  categoryHref="/learn/guides/"
+  datePublished="2023-11-09T08:00:00Z"
+  readTime="6 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <p>Downloading videos from the internet can sometimes feel like a minefield. While services like mp4yt are clean and secure, many other sites are filled with deceptive ads, malware, and unwanted software bundles. Here are the best practices to keep your device safe.</p>
+
+  <h2 id="avoid-shady-software">1. Avoid Installing Shady Software</h2>
+  <p>The safest way to download a video is through a web-based tool that requires <strong>no installation</strong>. If a website asks you to download a special "Video Downloader .exe" or a browser extension just to grab a YouTube video, be highly suspicious.</p>
+  <p>Often, these downloadable programs bundle adware, change your browser's default search engine, or monitor your browsing activity.</p>
+
+  <h2 id="check-extensions">2. Always Check the File Extension</h2>
+  <p>Before you double-click a downloaded file, look at the extension at the end of the filename. You are downloading a video or audio file. It should end in <code>.mp4</code>, <code>.webm</code>, <code>.mkv</code>, or <code>.mp3</code>.</p>
+  <p>If the file ends in <code>.exe</code>, <code>.msi</code>, <code>.bat</code>, <code>.cmd</code>, or <code>.scr</code>, <strong>do not open it</strong>. It is an executable program, likely malware, masquerading as a video file.</p>
+
+  <h2 id="fake-buttons">3. Beware of Fake Download Buttons</h2>
+  <p>Many file-hosting sites monetize by placing deceptive ads that look exactly like the site's real "Download" button. Clicking the wrong one might download adware.</p>
+  <p><strong>Tip:</strong> Hover your mouse over the download button before clicking. Look at the URL preview in the bottom-left corner of your browser. If the link goes to an ad network or a strange domain rather than initiating a media download, it's a fake button.</p>
+
+  <h2 id="respect-copyright">4. Respect Copyright and Terms of Service</h2>
+  <p>Always ensure you have the right to download the content you are accessing. Downloading videos for personal, offline viewing (like a tutorial for a flight or a public domain documentary) is generally acceptable, but redistributing copyrighted content without permission is illegal.</p>
+</ArticleLayout>

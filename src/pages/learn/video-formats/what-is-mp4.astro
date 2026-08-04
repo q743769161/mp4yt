@@ -1,0 +1,108 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Video Formats', href: '/learn/video-formats/' },
+  { name: 'What Is MP4?', href: '/learn/video-formats/what-is-mp4/' },
+];
+
+const tocItems = [
+  { text: 'Introduction to MP4', slug: 'introduction' },
+  { text: 'How MP4 Works', slug: 'how-mp4-works' },
+  { text: 'MP4 vs Other Formats', slug: 'mp4-vs-other' },
+  { text: 'Why MP4 is the Standard', slug: 'why-mp4-is-standard' },
+  { text: 'Common Questions', slug: 'faq' }
+];
+
+const relatedArticles = [
+  {
+    title: 'MP4 vs WebM',
+    href: '/learn/video-formats/mp4-vs-webm/',
+    category: 'Video Formats',
+    description: 'Compare MP4 and WebM side by side.'
+  },
+  {
+    title: 'Resolutions Explained',
+    href: '/learn/video-quality/resolutions-explained/',
+    category: 'Video Quality',
+    description: 'Understand video resolutions from 360p to 4K.'
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is MP4 the same as MPEG-4?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not exactly. MP4 is a container format (MPEG-4 Part 14), while MPEG-4 is a broader standard that includes video codecs (like H.264/MPEG-4 AVC) and audio codecs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can an MP4 file contain only audio?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, an MP4 container can hold only audio data. Often, these files are given the .m4a extension to indicate they contain audio only, but .mp4 is technically valid."
+      }
+    }
+  ]
+};
+---
+
+<ArticleLayout
+  title="What Is MP4? Everything You Need to Know"
+  description="A comprehensive guide to the MP4 container format — how it works, why it's universal, and when to use it."
+  canonicalUrl="/learn/video-formats/what-is-mp4/"
+  category="Video Formats"
+  categoryHref="/learn/video-formats/"
+  datePublished="2023-11-01T08:00:00Z"
+  readTime="6 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+  faqSchema={faqSchema}
+>
+  <h2 id="introduction">Introduction to MP4</h2>
+  <p>If you've ever downloaded a video, recorded a clip on your phone, or streamed a movie online, chances are you've interacted with an MP4 file. The <strong>MP4</strong> (MPEG-4 Part 14) format is arguably the most ubiquitous digital multimedia container format in the world.</p>
+  <p>But what exactly is an MP4 file? Why did it become the industry standard over formats like AVI or WMV? In this guide, we'll dive deep into the technical details of the MP4 format in simple terms.</p>
+
+  <h2 id="how-mp4-works">How MP4 Works: It's a Container, Not a Codec</h2>
+  <p>The most common misconception about MP4 is that it is a video compression format (a codec). In reality, MP4 is a <strong>container format</strong>.</p>
+  <p>Think of a container like a digital box. Inside this box, you can store various types of data:</p>
+  <ul>
+    <li><strong>Video streams:</strong> The actual moving pictures (usually encoded with H.264 or H.265 codecs).</li>
+    <li><strong>Audio streams:</strong> The sound (usually encoded as AAC or MP3).</li>
+    <li><strong>Subtitles:</strong> Text tracks for different languages.</li>
+    <li><strong>Metadata:</strong> Information about the file like chapter markers, title, and cover art.</li>
+  </ul>
+  <p>Because it's just a container, two `.mp4` files can contain vastly different types of video and audio data, which is why occasionally a device might fail to play a specific MP4 file if it doesn't support the codec inside.</p>
+
+  <h2 id="mp4-vs-other">MP4 vs Other Formats</h2>
+  <p>How does MP4 stack up against other popular containers?</p>
+  <ul>
+    <li><strong>MP4 vs AVI:</strong> AVI is an older format created by Microsoft. It's less efficient, creates larger file sizes, and doesn't support modern codecs as well as MP4.</li>
+    <li><strong>MP4 vs MOV:</strong> MOV is Apple's proprietary container format. While very similar (MP4 was actually based on the QuickTime MOV format), MP4 is a global standard and is more widely supported on non-Apple devices.</li>
+    <li><strong>MP4 vs MKV:</strong> MKV is a more flexible container that can hold virtually any codec and unlimited subtitle tracks. However, it's not natively supported by all browsers and devices, making MP4 the safer choice for universal playback.</li>
+  </ul>
+
+  <h2 id="why-mp4-is-standard">Why MP4 is the Universal Standard</h2>
+  <p>The rise of MP4 to dominance can be attributed to several key factors:</p>
+  <ol>
+    <li><strong>Universal Compatibility:</strong> Every modern web browser (Chrome, Safari, Firefox), smartphone (iOS, Android), smart TV, and operating system supports MP4 playback out of the box.</li>
+    <li><strong>High Compression, High Quality:</strong> When paired with the H.264 video codec and AAC audio codec, MP4 delivers excellent video quality at relatively small file sizes, making it perfect for streaming and downloading.</li>
+    <li><strong>Streaming Friendly:</strong> MP4 files are structured in a way that allows them to be streamed over the internet. You can start watching an MP4 video before the entire file has finished downloading.</li>
+  </ol>
+
+  <h2 id="faq">Common Questions</h2>
+  <h3>Is MP4 the same as MPEG-4?</h3>
+  <p>Not exactly. MP4 is a container format (MPEG-4 Part 14), while MPEG-4 is a broader standard that includes video codecs (like H.264/MPEG-4 AVC) and audio codecs.</p>
+  
+  <h3>Can an MP4 file contain only audio?</h3>
+  <p>Yes, an MP4 container can hold only audio data. Often, these files are given the `.m4a` (MPEG-4 Audio) extension to indicate they contain audio only, but `.mp4` is technically valid.</p>
+</ArticleLayout>

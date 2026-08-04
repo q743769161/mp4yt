@@ -1,0 +1,58 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Troubleshooting', href: '/learn/troubleshooting/' },
+  { name: 'Fix Audio/Video Desync', href: '/learn/troubleshooting/fix-audio-video-desync/' },
+];
+
+const tocItems = [
+  { text: 'Why Does Desync Happen?', slug: 'why-desync-happens' },
+  { text: 'Fix 1: The Quick VLC Fix', slug: 'vlc-fix' },
+  { text: 'Fix 2: Re-encode the Video', slug: 're-encode-fix' }
+];
+
+const relatedArticles = [
+  {
+    title: 'Frame Rates Explained',
+    href: '/learn/video-quality/frame-rates/',
+    category: 'Video Quality',
+    description: 'Learn how variable frame rates can cause issues.'
+  }
+];
+---
+
+<ArticleLayout
+  title="How to Fix Audio and Video Out of Sync (Desync)"
+  description="When lips move but the sound is delayed, the file is desynced. Learn why this happens and how to fix it easily."
+  canonicalUrl="/learn/troubleshooting/fix-audio-video-desync/"
+  category="Troubleshooting"
+  categoryHref="/learn/troubleshooting/"
+  datePublished="2024-01-23T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="why-desync-happens">Why Does Desync Happen?</h2>
+  <p>Audio and video desynchronization is one of the most frustrating playback issues. It usually occurs for one of three reasons:</p>
+  <ol>
+    <li><strong>Variable Frame Rate (VFR):</strong> Smartphones often record video at a variable frame rate to save space. Some video editors and players cannot handle VFR, causing the audio to drift over time.</li>
+    <li><strong>Bad Downloads:</strong> If your internet dropped or the download was paused and resumed, the file headers might be corrupt.</li>
+    <li><strong>Hardware Struggling:</strong> If you are playing a massive 4K H.265 file on an old laptop, the video stream might lag while the audio stream plays fine.</li>
+  </ol>
+
+  <h2 id="vlc-fix">Fix 1: The Quick VLC Fix (During Playback)</h2>
+  <p>If you just want to watch the video right now and don't care about fixing the file permanently, you can use <strong>VLC Media Player</strong> to delay or advance the audio on the fly.</p>
+  <ul>
+    <li>Press <strong>J</strong> on your keyboard to decrease the audio delay (if audio is behind the video).</li>
+    <li>Press <strong>K</strong> on your keyboard to increase the audio delay (if audio is ahead of the video).</li>
+  </ul>
+  <p>Each press shifts the audio track by 50 milliseconds. Keep pressing until the lips match the voice.</p>
+
+  <h2 id="re-encode-fix">Fix 2: Re-encode to Constant Frame Rate</h2>
+  <p>If you are trying to edit the video in Premiere or DaVinci Resolve and the audio drifts, you need to fix the file permanently. You can do this using the free tool <strong>Handbrake</strong>.</p>
+  <p>Load the video into Handbrake, go to the <strong>Video</strong> tab, and select <strong>Constant Framerate</strong> instead of Variable. Export the video. The new file will have perfectly locked audio and video tracks.</p>
+</ArticleLayout>

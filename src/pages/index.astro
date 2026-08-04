@@ -7,6 +7,7 @@ import Features from "../components/Features.astro";
 import HowItWorks from "../components/HowItWorks.astro";
 import SEOContent from "../components/SEOContent.astro";
 import FAQ from "../components/FAQ.astro";
+import KnowledgeHub from "../components/KnowledgeHub.astro";
 import Footer from "../components/Footer.astro";
 import ScrollAnimations from "../components/ScrollAnimations.astro";
 ---
@@ -15,6 +16,7 @@ import ScrollAnimations from "../components/ScrollAnimations.astro";
   title="YouTube Video Downloader — Free MP4 & MP3 in 4K | mp4yt"
   description="Download YouTube videos as MP4 in 4K or convert to MP3 — free, fast, no app needed. Also supports Instagram, TikTok, Twitter/X & 1000+ platforms."
   canonicalUrl="https://mp4yt.com/"
+  breadcrumbItems={[{ name: "YouTube Video Downloader", href: "/" }]}
 >
   <Navbar />
   <main id="main-content">
@@ -24,8 +26,10 @@ import ScrollAnimations from "../components/ScrollAnimations.astro";
     <HowItWorks />
     <SEOContent />
     <FAQ />
+    <KnowledgeHub />
   </main>
   <Footer />
   <ScrollAnimations />
 </Layout>
+
 

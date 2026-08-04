@@ -1,0 +1,60 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Codecs', href: '/learn/codecs/' },
+  { name: 'What Is a Codec?', href: '/learn/codecs/what-is-a-codec/' },
+];
+
+const tocItems = [
+  { text: 'What Does Codec Mean?', slug: 'what-does-codec-mean' },
+  { text: 'Codec vs Container', slug: 'codec-vs-container' },
+  { text: 'Why Codecs Matter', slug: 'why-codecs-matter' }
+];
+
+const relatedArticles = [
+  {
+    title: 'H.264 vs H.265',
+    href: '/learn/codecs/h264-vs-h265/',
+    category: 'Codecs',
+    description: 'Compare the most popular video codecs.'
+  },
+  {
+    title: 'What Is MP4?',
+    href: '/learn/video-formats/what-is-mp4/',
+    category: 'Video Formats',
+    description: 'Understand the difference between a codec and a container.'
+  }
+];
+---
+
+<ArticleLayout
+  title="What Is a Video Codec? A Simple Explanation"
+  description="Codecs encode and decode video data. Learn what they are, why they matter, and how they affect your downloads."
+  canonicalUrl="/learn/codecs/what-is-a-codec/"
+  category="Codecs"
+  categoryHref="/learn/codecs/"
+  datePublished="2023-11-07T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="what-does-codec-mean">What Does "Codec" Mean?</h2>
+  <p>The word <strong>codec</strong> is a portmanteau of <strong>co</strong>der and <strong>dec</strong>oder (or <strong>co</strong>mpressor and <strong>dec</strong>ompressor). </p>
+  <p>Uncompressed raw video is incredibly massive. A single minute of raw 1080p video could take up several gigabytes of space. A codec is a software or hardware algorithm that shrinks (encodes) this massive data so it can be stored and transmitted, and then unshrinks (decodes) it so it can be played back on your screen.</p>
+
+  <h2 id="codec-vs-container">Codec vs. Container</h2>
+  <p>People often confuse codecs with containers (formats).</p>
+  <ul>
+    <li><strong>The Container (Format):</strong> This is the box that holds the data. Examples: MP4, MKV, WebM.</li>
+    <li><strong>The Codec:</strong> This is the method used to pack the data inside the box. Examples: H.264, HEVC (H.265), VP9, AV1.</li>
+  </ul>
+  <p>So, an MP4 file (container) might contain video compressed with the H.264 codec.</p>
+
+  <h2 id="why-codecs-matter">Why Codecs Matter When Downloading</h2>
+  <p>Newer codecs (like H.265 or AV1) are more efficient. They can compress a video to a smaller file size without losing visual quality compared to older codecs. However, newer codecs require more processing power to decode and might not be supported on older devices.</p>
+  <p>When you download a video, getting the right codec ensures that the file isn't unnecessarily huge, but also guarantees it will actually play on your phone or TV.</p>
+</ArticleLayout>

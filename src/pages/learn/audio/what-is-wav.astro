@@ -1,0 +1,55 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+
+const breadcrumbs = [
+  { name: 'mp4yt', href: '/' },
+  { name: 'Learn', href: '/learn/' },
+  { name: 'Audio Formats', href: '/learn/audio/' },
+  { name: 'What is WAV?', href: '/learn/audio/what-is-wav/' },
+];
+
+const tocItems = [
+  { text: 'Uncompressed Audio', slug: 'uncompressed' },
+  { text: 'Quality vs File Size', slug: 'quality-vs-size' },
+  { text: 'When to Use WAV', slug: 'when-to-use' }
+];
+
+const relatedArticles = [
+  {
+    title: 'MP3 vs AAC',
+    href: '/learn/audio/mp3-vs-aac/',
+    category: 'Audio Formats',
+    description: 'Learn about compressed, lossy audio formats.'
+  }
+];
+---
+
+<ArticleLayout
+  title="What is a WAV File? Understanding Lossless Audio"
+  description="WAV files offer uncompressed, studio-quality sound. Learn how the format works and when you should use it instead of MP3."
+  canonicalUrl="/learn/audio/what-is-wav/"
+  category="Audio Formats"
+  categoryHref="/learn/audio/"
+  datePublished="2024-01-15T08:00:00Z"
+  readTime="4 min read"
+  breadcrumbs={breadcrumbs}
+  tocItems={tocItems}
+  relatedArticles={relatedArticles}
+>
+  <h2 id="uncompressed">Uncompressed, Studio-Quality Audio</h2>
+  <p>WAV (Waveform Audio File Format) is an audio file format standard developed by Microsoft and IBM back in 1991. The most important thing to know about WAV is that it is typically <strong>uncompressed and lossless</strong>.</p>
+  <p>When an audio track is saved as a WAV file, it retains 100% of the original audio data recorded in the studio. No frequencies are cut off, and no data is thrown away to save space. Because of this, it provides the highest possible audio fidelity.</p>
+
+  <h2 id="quality-vs-size">The Quality vs File Size Trade-off</h2>
+  <p>The price of perfect audio quality is storage space. Uncompressed WAV files are massive.</p>
+  <p>A typical 3-minute song saved as an MP3 might take up 5MB of space. That exact same 3-minute song saved as an uncompressed WAV file will take up roughly <strong>30MB to 50MB</strong>.</p>
+
+  <h2 id="when-to-use">When Should You Use WAV?</h2>
+  <p>For everyday music listening or podcast streaming, WAV is overkill. The files are too large to stream efficiently over mobile networks, and on standard earbuds, you won't be able to hear the difference between a WAV and a high-quality AAC file.</p>
+  <p>However, you should use WAV if:</p>
+  <ul>
+    <li>You are a music producer editing audio in a Digital Audio Workstation (DAW) like Logic or Ableton.</li>
+    <li>You are a video editor looking for pristine sound effects or voiceovers that will be heavily edited and exported later.</li>
+    <li>You are an audiophile listening to music on high-end, studio-grade reference monitors or headphones.</li>
+  </ul>
+</ArticleLayout>
