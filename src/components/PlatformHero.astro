@@ -457,18 +457,8 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
   // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
   // ═══════════════════════════════════════════════════════════════
 
-  // ── Community Cobalt instances — sourced from cobalt.directory, sorted by uptime ──
-  const COBALT_INSTANCES = [
-    "https://melon.clxxped.lol/",
-    "https://apicobalt.mgytr.top/",
-    "https://cobalt.omega.wolfy.love/",
-    "https://grapefruit.clxxped.lol/",
-    "https://lime.clxxped.lol/",
-    "https://cobalt.alpha.wolfy.love/",
-    "https://kitty.tame.gg/",
-    "https://api.cobalt.liubquanti.click/",
-    "https://api.qwkuns.me/",
-  ];
+  // ── Self-Hosted API Gateway ──
+  const BACKEND_URL = "http://localhost:4000/api/extract";
 
   const COBALT_TIMEOUT_MS = 12000;
 
@@ -516,9 +506,7 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     mode: string,
     cobaltApiUrl: string,
   ): Promise<any> {
-    const endpoint = cobaltApiUrl.endsWith("/")
-      ? cobaltApiUrl
-      : `${cobaltApiUrl}/`;
+    const endpoint = BACKEND_URL;
 
     const body: any = {
       url: targetUrl,
@@ -586,24 +574,13 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     }
   }
 
-  /** Try Cobalt across multiple instances with automatic failover */
+  /** Call our API Gateway directly */
   async function callCobaltWithFailover(
     targetUrl: string,
     quality: string,
     mode: string,
   ): Promise<any> {
-    let lastError: Error | null = null;
-
-    for (const apiUrl of COBALT_INSTANCES) {
-      try {
-        return await callCobalt(targetUrl, quality, mode, apiUrl);
-      } catch (e: any) {
-        if (!e.skipInstance) lastError = e;
-        continue;
-      }
-    }
-
-    throw lastError || new Error("All instances failed. Please try again later.");
+    return await callCobalt(targetUrl, quality, mode, BACKEND_URL);
   }
 
   // ── Quality extraction: fetch all formats in parallel ──
@@ -991,16 +968,17 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     });
   }
 
-  // Direct CDN download — opens CDN URL in new tab so browser handles natively
+  // Download: navigate directly to the stream URL.
+  // The content-disposition: attachment header forces the browser to download natively.
+  // No RAM buffering — the browser streams directly to disk.
   resultDownloadBtn.addEventListener('click', (e: Event) => {
     e.preventDefault();
     const cdnUrl = resultDownloadBtn.href;
     if (!cdnUrl || cdnUrl === '#') return;
 
-    // Open CDN URL directly — browser downloads from CDN, zero Worker bandwidth
-    window.open(cdnUrl, '_blank');
+    // Navigate directly — content-disposition: attachment triggers native download
+    window.location.href = cdnUrl;
 
-    // Provide immediate visual feedback on the button
     const origHTML = resultDownloadBtn.innerHTML;
     resultDownloadBtn.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block;vertical-align:middle;margin-right:6px;">

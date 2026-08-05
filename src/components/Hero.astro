@@ -1098,18 +1098,8 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
   // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
   // ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-  // ── Community Cobalt instances — sourced from cobalt.directory, sorted by uptime ──
-  const COBALT_INSTANCES = [
-    "https://melon.clxxped.lol/",
-    "https://apicobalt.mgytr.top/",
-    "https://cobalt.omega.wolfy.love/",
-    "https://grapefruit.clxxped.lol/",
-    "https://lime.clxxped.lol/",
-    "https://cobalt.alpha.wolfy.love/",
-    "https://kitty.tame.gg/",
-    "https://api.cobalt.liubquanti.click/",
-    "https://api.qwkuns.me/",
-  ];
+  // ── Self-Hosted API Gateway ──
+  const BACKEND_URL = "http://localhost:4000/api/extract";
 
   const COBALT_TIMEOUT_MS = 12000;
 
@@ -1157,9 +1147,7 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
     mode: string,
     cobaltApiUrl: string,
   ): Promise<any> {
-    const endpoint = cobaltApiUrl.endsWith("/")
-      ? cobaltApiUrl
-      : `${cobaltApiUrl}/`;
+    const endpoint = BACKEND_URL;
 
     const body: any = {
       url: targetUrl,
@@ -1227,24 +1215,13 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
     }
   }
 
-  /** Try Cobalt across multiple instances with automatic failover */
+  /** Call our API Gateway directly */
   async function callCobaltWithFailover(
     targetUrl: string,
     quality: string,
     mode: string,
   ): Promise<any> {
-    let lastError: Error | null = null;
-
-    for (const apiUrl of COBALT_INSTANCES) {
-      try {
-        return await callCobalt(targetUrl, quality, mode, apiUrl);
-      } catch (e: any) {
-        if (!e.skipInstance) lastError = e;
-        continue;
-      }
-    }
-
-    throw lastError || new Error("All instances failed. Please try again later.");
+    return await callCobalt(targetUrl, quality, mode, BACKEND_URL);
   }
 
   // ———— Quality extraction: fetch all formats in parallel ————
@@ -1591,7 +1568,10 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
       currentStreamUrl = defaultFormat.url;
       resultDownloadBtn.href = currentStreamUrl;
       resultDownloadBtn.setAttribute("download", currentFilename);
-      resultVideo.src = currentStreamUrl;
+      // Don't eagerly load video preview — tunnel URLs are one-time-use tokens.
+      // The video src is set only when the user opens the preview <details> toggle.
+      resultVideo.removeAttribute("src");
+      resultVideo.load();
 
       // Populate resolution options dropdown
       dropdownMenu.innerHTML = "";
@@ -1615,7 +1595,9 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
         resultDownloadBtn.setAttribute("download", specificFilename);
         currentFilename = specificFilename;
         resultFilename.textContent = specificFilename;
-        resultVideo.src = fmt.url;
+        // Don't set video src here — tunnel tokens are single-use
+        resultVideo.removeAttribute("src");
+        resultVideo.load();
 
         resultDownloadBtn.innerHTML = `
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -1712,27 +1694,65 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
     });
   }
 
-  // Direct CDN download — opens CDN URL in new tab
-  resultDownloadBtn.addEventListener("click", (e: Event) => {
+  // Download: get a FRESH tunnel URL, then navigate directly to it.
+  // This lets the browser's native download manager stream to disk (no RAM buffering).
+  // We always re-extract because Cobalt tunnel tokens are single-use and may be expired.
+  resultDownloadBtn.addEventListener("click", async (e: Event) => {
     e.preventDefault();
-    const cdnUrl = resultDownloadBtn.href;
-    if (!cdnUrl || cdnUrl === "#") return;
-
-    window.open(cdnUrl, "_blank");
+    if (!currentStreamUrl || currentStreamUrl === "#") return;
 
     const origHTML = resultDownloadBtn.innerHTML;
     resultDownloadBtn.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block;vertical-align:middle;margin-right:6px;">
-        <path d="M2 8l4 4L14 3" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg class="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:inline-block;vertical-align:middle;margin-right:6px;">
+        <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.3)" stroke-width="2"></circle>
+        <path d="M8 2a6 6 0 0 1 6 6" stroke="white" stroke-width="2" stroke-linecap="round"></path>
       </svg>
-      DOWNLOAD STARTED
+      PREPARING...
     `;
     (resultDownloadBtn as any).style.pointerEvents = "none";
 
-    setTimeout(() => {
-      resultDownloadBtn.innerHTML = origHTML;
-      (resultDownloadBtn as any).style.pointerEvents = "";
-    }, 4000);
+    try {
+      // Determine which quality/mode the user currently has selected
+      const inputUrl = (document.getElementById("hero-input") as HTMLInputElement).value.trim();
+      const selectedRes = triggerText.textContent || "";
+      
+      // Find the matching format config for the selected resolution
+      let selectedQuality = "1080";
+      let selectedMode = "auto";
+      for (const cfg of FORMATS_CONFIG) {
+        if (selectedRes.includes(cfg.label)) {
+          selectedQuality = cfg.q;
+          selectedMode = cfg.mode;
+          break;
+        }
+      }
+
+      // Request a fresh tunnel URL from the backend
+      const freshData = await callCobaltWithFailover(inputUrl, selectedQuality, selectedMode);
+      
+      if (freshData.url) {
+        // Navigate browser directly to the tunnel — content-disposition: attachment
+        // forces download, and the browser streams to disk natively (no RAM buffering)
+        window.location.href = freshData.url;
+
+        resultDownloadBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block;vertical-align:middle;margin-right:6px;">
+            <path d="M2 8l4 4L14 3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          DOWNLOAD STARTED
+        `;
+      } else {
+        throw new Error("No download URL returned");
+      }
+    } catch (err: any) {
+      resultDownloadBtn.innerHTML = `DOWNLOAD FAILED — TRY AGAIN`;
+      console.error("Download error:", err);
+    } finally {
+      setTimeout(() => {
+        resultDownloadBtn.innerHTML = origHTML;
+        (resultDownloadBtn as any).style.pointerEvents = "";
+      }, 4000);
+    }
   });
 
   // Copy URL button

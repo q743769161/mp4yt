@@ -1,0 +1,32 @@
+services:
+  cobalt:
+    image: ghcr.io/imputnet/cobalt:11
+    init: true
+    read_only: true
+    restart: unless-stopped
+    container_name: cobalt
+    environment:
+      # API_URL must be the public facing URL of the tunnel proxy in production
+      API_URL: "https://${DOMAIN_NAME:-mp4yt.com}/"
+    labels:
+      - com.centurylinklabs.watchtower.scope=cobalt
+
+  backend:
+    build: ../backend
+    container_name: mp4yt-backend
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:4000:4000
+    environment:
+      - PORT=4000
+      - COBALT_API_URL=http://cobalt:9000/
+      - PUBLIC_API_URL=https://${DOMAIN_NAME:-mp4yt.com}
+    depends_on:
+      - cobalt
+
+  watchtower:
+    image: ghcr.io/containrrr/watchtower
+    restart: unless-stopped
+    command: --cleanup --scope cobalt --interval 900 --include-restarting
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

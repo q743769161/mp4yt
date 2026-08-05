@@ -1,0 +1,35 @@
+services:
+  cobalt:
+    image: ghcr.io/imputnet/cobalt:11
+    init: true
+    read_only: true
+    restart: unless-stopped
+    container_name: cobalt
+    ports:
+      - 127.0.0.1:9000:9000
+    environment:
+      # We will set this to our API Gateway's URL eventually.
+      # For now, local testing on port 9000.
+      API_URL: "http://localhost:9000/"
+    labels:
+      - com.centurylinklabs.watchtower.scope=cobalt
+
+  backend:
+    build: ./backend
+    container_name: mp4yt-backend
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:4000:4000
+    environment:
+      - PORT=4000
+      - COBALT_API_URL=http://cobalt:9000/
+      - PUBLIC_API_URL=http://localhost:4000
+    depends_on:
+      - cobalt
+
+  watchtower:
+    image: ghcr.io/containrrr/watchtower
+    restart: unless-stopped
+    command: --cleanup --scope cobalt --interval 900 --include-restarting
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
