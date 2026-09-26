@@ -457,8 +457,11 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
   // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
   // ═══════════════════════════════════════════════════════════════
 
-  // ── Self-Hosted API Gateway ──
-  const BACKEND_URL = "http://localhost:4000/api/extract";
+  // ── Public Cobalt instances (direct browser calls, no backend needed) ──
+  const COBALT_INSTANCES = [
+    "https://cobaltapi.cjs.nz",
+    "https://rue-cobalt.xenon.zone",
+  ];
 
   const COBALT_TIMEOUT_MS = 12000;
 
@@ -506,7 +509,7 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     mode: string,
     cobaltApiUrl: string,
   ): Promise<any> {
-    const endpoint = BACKEND_URL;
+    const endpoint = cobaltApiUrl;
 
     const body: any = {
       url: targetUrl,
@@ -574,13 +577,21 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     }
   }
 
-  /** Call our API Gateway directly */
+  /** Try each Cobalt instance in order until one succeeds */
   async function callCobaltWithFailover(
     targetUrl: string,
     quality: string,
     mode: string,
   ): Promise<any> {
-    return await callCobalt(targetUrl, quality, mode, BACKEND_URL);
+    let lastError: any = null;
+    for (const instance of COBALT_INSTANCES) {
+      try {
+        return await callCobalt(targetUrl, quality, mode, instance);
+      } catch (e: any) {
+        lastError = e;
+      }
+    }
+    throw lastError || new Error("All Cobalt instances failed");
   }
 
   // ── Quality extraction: fetch all formats in parallel ──
