@@ -457,8 +457,9 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
   // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
   // ═══════════════════════════════════════════════════════════════
 
-  // ── Public Cobalt instances (direct browser calls, no backend needed) ──
+  // ── Cobalt instances: self-hosted first, public fallbacks ──
   const COBALT_INSTANCES = [
+    "https://cobalt-awhs.onrender.com",
     "https://cobaltapi.cjs.nz",
     "https://rue-cobalt.xenon.zone",
   ];
