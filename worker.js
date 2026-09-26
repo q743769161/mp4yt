@@ -168,8 +168,13 @@ function buildOgHtml(title, thumbnail, description, videoUrl, siteUrl) {
 </html>`;
 }
 
-    // ── Note: /api/extract is now handled by the Node.js backend.
-
+// ── Main fetch handler ──────────────────────────────────────
+// Note: /api/extract is handled client-side (see Hero.astro);
+// the Worker serves static assets and the /watch SEO endpoint.
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const pathname = url.pathname;
 
     // 1. /watch — SEO handler (zero subrequests)
     //    Bots get OG tags with YouTube thumbnail. Humans get redirected to homepage.
@@ -244,3 +249,6 @@ function buildOgHtml(title, thumbnail, description, videoUrl, siteUrl) {
       console.error(`[Worker] Error fetching asset:`, err.message);
       return withSecurityHeaders(new Response('Something went wrong. Please try again.', { status: 500 }));
     };
+
+  }
+};
