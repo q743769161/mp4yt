@@ -8,11 +8,13 @@
  *
  * 1. Serves static pages/assets from Cloudflare's global edge network.
  * 2. Handles /watch for bot/SEO OG meta tags (zero subrequests).
- * 3. Provides clean 404 fallback using Astro's compiled 404 page.
+ * 3. Proxies Cobalt (POST /api/cobalt, GET /api/download) so the browser
+ *    only talks to this site: server-side instance failover + per-request
+ *    fresh tunnel streaming (tunnel URLs are single-use / short-lived).
  *
- * All Cobalt API calls happen client-side in the browser (Hero.astro /
- * PlatformHero.astro). Downloads go directly from browser to CDN.
- * The Worker never touches video data or calls external APIs.
+ * Cobalt API calls and downloads run through the same-origin proxy above
+ * (Hero.astro / PlatformHero.astro). The browser never calls Cobalt
+ * instances directly.
  */
 
 // ── Security Response Headers ──────────────────────────────
@@ -168,13 +170,334 @@ function buildOgHtml(title, thumbnail, description, videoUrl, siteUrl) {
 </html>`;
 }
 
+// ── Cobalt same-origin proxy ──────────────────────────────────
+// The browser only talks to this Worker. Instance failover and the byte
+// download happen server-side (edge -> instance), which fixes:
+//  - Cobalt instances unreachable/blocked from the user's network
+//  - Single-use, short-lived tunnel URLs breaking download managers:
+//    /api/download re-resolves a FRESH tunnel on EVERY request, so the
+//    link is stable and retry / multi-thread safe.
+const COBALT_INSTANCES = [
+  "https://cobalt-awhs.onrender.com",
+  "https://cobaltapi.cjs.nz",
+  "https://rue-cobalt.xenon.zone",
+];
+const COBALT_INSTANCE_TIMEOUT_MS = 20000;
+
+// Hosts /api/download is allowed to fetch: the Cobalt instances plus the
+// media CDNs that Cobalt "redirect" responses point to. Anything else -> 403.
+const PROXIABLE_HOST_SUFFIXES = [
+  "cobalt-awhs.onrender.com",
+  "cobaltapi.cjs.nz",
+  "rue-cobalt.xenon.zone",
+  "googlevideo.com",
+  "cdninstagram.com",
+  "fbcdn.net",
+  "tiktokcdn.com",
+  "twimg.com",
+  "sndcdn.com",
+  "redd.it",
+  "redditmedia.com",
+  "akamaized.net",
+  "vimeocdn.com",
+  "cloudfront.net",
+  "pinimg.com",
+];
+
+function isProxiableUrl(target) {
+  try {
+    const u = new URL(target);
+    if (u.protocol !== "https:") return false;
+    return PROXIABLE_HOST_SUFFIXES.some(
+      (s) => u.hostname === s || u.hostname.endsWith("." + s),
+    );
+  } catch {
+    return false;
+  }
+}
+
+// Cobalt error codes where trying the next instance may help.
+const COBALT_RETRY_CODES = new Set([
+  "error.api.auth.jwt.missing",
+  "error.api.auth.jwt.invalid",
+  "error.api.auth.turnstile.missing",
+  "error.api.auth.turnstile.invalid",
+  "error.api.auth.key.invalid",
+  "error.api.auth.key.ip_not_allowed",
+  "error.api.youtube.login",
+  "error.api.youtube.decipher",
+]);
+
+// Best-effort in-memory per-IP rate limit for /api/*.
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX_HITS = 120;
+const rateHits = new Map();
+function hitRateLimit(ip) {
+  const now = Date.now();
+  const arr = (rateHits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS);
+  arr.push(now);
+  rateHits.set(ip, arr);
+  if (rateHits.size > 5000) rateHits.clear();
+  return arr.length > RATE_MAX_HITS;
+}
+
+async function fetchWithTimeout(url, options, ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** POST body to each Cobalt instance in order; return first usable JSON. */
+async function cobaltResolve(body) {
+  let lastError = null;
+  for (const instance of COBALT_INSTANCES) {
+    try {
+      const res = await fetchWithTimeout(
+        instance,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+        COBALT_INSTANCE_TIMEOUT_MS,
+      );
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || typeof data !== "object") {
+        lastError = new Error(`instance ${instance}: HTTP ${res.status}`);
+        continue;
+      }
+      if (
+        data.status === "tunnel" ||
+        data.status === "redirect" ||
+        data.status === "picker"
+      ) {
+        return data;
+      }
+      if (data.status === "error") {
+        const code = data.error && data.error.code;
+        if (COBALT_RETRY_CODES.has(code)) {
+          lastError = new Error(`instance ${instance}: ${code}`);
+          continue; // try next instance
+        }
+        return data; // permanent error for this video — fail fast
+      }
+      lastError = new Error(`instance ${instance}: unexpected response`);
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw lastError || new Error("all Cobalt instances failed");
+}
+
+function jsonResponse(data, status = 200) {
+  return withSecurityHeaders(
+    new Response(JSON.stringify(data), {
+      status,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
+    }),
+  );
+}
+
+/** Build the Cobalt POST body from /api/download query params. */
+function cobaltBodyFromParams(params) {
+  const videoUrl = (params.get("url") || "").trim();
+  const quality = params.get("quality") || "720";
+  const mode = params.get("mode") || "auto";
+  if (!validateUrl(videoUrl)) return null;
+  const body = {
+    url: videoUrl,
+    downloadMode: mode,
+    youtubeVideoCodec: "h264",
+  };
+  if (mode === "audio") {
+    body.audioFormat = quality === "best" ? "mp3" : quality;
+  } else {
+    body.videoQuality = quality === "best" ? "max" : quality;
+  }
+  return body;
+}
+
+/** Resolve a fresh stream URL for the given params (throws on failure). */
+async function resolveStreamUrl(params) {
+  const body = cobaltBodyFromParams(params);
+  if (!body) {
+    const err = new Error("invalid url");
+    err.statusCode = 400;
+    throw err;
+  }
+  const data = await cobaltResolve(body);
+  let streamUrl = "";
+  if (
+    (data.status === "tunnel" || data.status === "redirect") &&
+    typeof data.url === "string"
+  ) {
+    streamUrl = data.url;
+  } else if (
+    data.status === "picker" &&
+    Array.isArray(data.picker) &&
+    data.picker.length > 0 &&
+    typeof data.picker[0].url === "string"
+  ) {
+    streamUrl = data.picker[0].url;
+  }
+  if (!streamUrl || !isProxiableUrl(streamUrl)) {
+    const err = new Error(
+      (data && data.error && data.error.code) || "no stream url",
+    );
+    err.statusCode = 502;
+    err.cobaltData = data;
+    throw err;
+  }
+  return streamUrl;
+}
+
+/** POST /api/cobalt — proxied Cobalt API with server-side failover. */
+async function handleApiCobalt(request) {
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (hitRateLimit(ip)) {
+    return jsonResponse(
+      { status: "error", error: { code: "error.api.rate_exceeded" } },
+      429,
+    );
+  }
+  let body = null;
+  try {
+    body = await request.json();
+  } catch {
+    body = null;
+  }
+  if (!body || !validateUrl(body.url)) {
+    return jsonResponse(
+      { status: "error", error: { code: "error.api.link.unsupported" } },
+      400,
+    );
+  }
+  try {
+    const data = await cobaltResolve(body);
+    return jsonResponse(data, 200);
+  } catch (e) {
+    return jsonResponse(
+      { status: "error", error: { code: "error.api.fetch.fail" } },
+      200,
+    );
+  }
+}
+
+/**
+ * GET /api/download — resolve a FRESH tunnel every request, then stream it.
+ * Stable link: download managers can retry / multi-thread safely because
+ * each request consumes its own single-use tunnel server-side.
+ * ?url= &quality= &mode= &filename= &inline=1
+ */
+async function handleApiDownload(request, url) {
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (hitRateLimit(ip)) {
+    return withSecurityHeaders(
+      new Response("Rate limited, try again later.", { status: 429 }),
+    );
+  }
+
+  let streamUrl;
+  try {
+    streamUrl = await resolveStreamUrl(url.searchParams);
+  } catch (e) {
+    const code =
+      (e && e.cobaltData && e.cobaltData.error && e.cobaltData.error.code) ||
+      "error.api.fetch.fail";
+    return jsonResponse(
+      { status: "error", error: { code } },
+      e && e.statusCode ? e.statusCode : 502,
+    );
+  }
+
+  const fwdHeaders = {};
+  const range = request.headers.get("range");
+  if (range) fwdHeaders["range"] = range;
+
+  let upstream;
+  try {
+    upstream = await fetch(streamUrl, {
+      method: request.method === "HEAD" ? "HEAD" : "GET",
+      headers: fwdHeaders,
+    });
+  } catch (e) {
+    return withSecurityHeaders(
+      new Response("Upstream fetch failed.", { status: 502 }),
+    );
+  }
+  if (!upstream.ok && upstream.status !== 206) {
+    return withSecurityHeaders(
+      new Response("Upstream error.", { status: 502 }),
+    );
+  }
+
+  const outHeaders = new Headers();
+  for (const h of [
+    "content-type",
+    "content-length",
+    "content-range",
+    "accept-ranges",
+    "etag",
+    "last-modified",
+  ]) {
+    const v = upstream.headers.get(h);
+    if (v) outHeaders.set(h, v);
+  }
+  if (!outHeaders.has("content-type"))
+    outHeaders.set("content-type", "video/mp4");
+
+  const inline = url.searchParams.get("inline") === "1";
+  const upstreamCD = upstream.headers.get("content-disposition");
+  if (upstreamCD && !inline) {
+    outHeaders.set("content-disposition", upstreamCD);
+  } else {
+    const filename =
+      (url.searchParams.get("filename") || "").trim() || "video.mp4";
+    const safe = encodeURIComponent(filename).replace(/'/g, "%27");
+    outHeaders.set(
+      "content-disposition",
+      `${inline ? "inline" : "attachment"}; filename*=UTF-8''${safe}`,
+    );
+  }
+
+  // Stream straight through — the Worker never buffers the file.
+  return withSecurityHeaders(
+    new Response(upstream.body, {
+      status: upstream.status,
+      headers: outHeaders,
+    }),
+  );
+}
+
 // ── Main fetch handler ──────────────────────────────────────
-// Note: /api/extract is handled client-side (see Hero.astro);
-// the Worker serves static assets and the /watch SEO endpoint.
+// Note: Cobalt API + downloads go through the same-origin proxy above
+// (POST /api/cobalt, GET /api/download); the browser never calls Cobalt
+// instances directly. The Worker also serves static assets and /watch SEO.
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const pathname = url.pathname;
+
+    // 0. Cobalt proxy API (same-origin; see above)
+    if (pathname === "/api/cobalt" && request.method === "POST") {
+      return handleApiCobalt(request);
+    }
+    if (
+      pathname === "/api/download" &&
+      (request.method === "GET" || request.method === "HEAD")
+    ) {
+      return handleApiDownload(request, url);
+    }
 
     // 1. /watch — SEO handler (zero subrequests)
     //    Bots get OG tags with YouTube thumbnail. Humans get redirected to homepage.
