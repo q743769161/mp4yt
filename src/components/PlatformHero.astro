@@ -457,14 +457,13 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
   // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
   // ═══════════════════════════════════════════════════════════════
 
-  // ── Cobalt instances: self-hosted first, public fallbacks ──
-  const COBALT_INSTANCES = [
-    "https://cobalt-awhs.onrender.com",
-    "https://cobaltapi.cjs.nz",
-    "https://rue-cobalt.xenon.zone",
-  ];
-
-  const COBALT_TIMEOUT_MS = 12000;
+  // ── Cobalt via same-origin Worker proxy ──
+  // POST /api/cobalt fans out to the instances with server-side failover.
+  // Downloads use stable /api/download links (Worker re-resolves a fresh
+  // single-use tunnel on every request). The browser only ever talks to
+  // this site: no CORS / region issues, and tunnel URLs never leak to
+  // download managers.
+  const COBALT_TIMEOUT_MS = 75000;
 
   const SKIP_ERROR_CODES = new Set([
     "error.api.auth.jwt.missing",
@@ -503,14 +502,13 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
     return errorMap[errorCode] || null;
   }
 
-  /** Call a single Cobalt instance with timeout */
+  /** Call Cobalt via the Worker proxy with timeout */
   async function callCobalt(
     targetUrl: string,
     quality: string,
     mode: string,
-    cobaltApiUrl: string,
   ): Promise<any> {
-    const endpoint = cobaltApiUrl;
+    const endpoint = "/api/cobalt";
 
     const body: any = {
       url: targetUrl,
@@ -571,28 +569,20 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
       clearTimeout(timeoutId);
       if (e.name === "AbortError") {
         throw new Error(
-          `Instance timed out after ${COBALT_TIMEOUT_MS / 1000}s`,
+          `Request timed out after ${COBALT_TIMEOUT_MS / 1000}s`,
         );
       }
       throw e;
     }
   }
 
-  /** Try each Cobalt instance in order until one succeeds */
+  /** One call — the Worker already fans out to instances with failover */
   async function callCobaltWithFailover(
     targetUrl: string,
     quality: string,
     mode: string,
   ): Promise<any> {
-    let lastError: any = null;
-    for (const instance of COBALT_INSTANCES) {
-      try {
-        return await callCobalt(targetUrl, quality, mode, instance);
-      } catch (e: any) {
-        lastError = e;
-      }
-    }
-    throw lastError || new Error("All Cobalt instances failed");
+    return callCobalt(targetUrl, quality, mode);
   }
 
   // ── Quality extraction: fetch all formats in parallel ──
@@ -616,28 +606,38 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
             config.q,
             config.mode,
           );
-          let streamUrl = "";
+          let available = false;
           let filename = "";
 
           if (resObj.status === "redirect" || resObj.status === "tunnel") {
-            streamUrl = resObj.url;
-            filename = resObj.filename || "video.mp4";
+            available = true;
+            filename = resObj.filename || "";
           } else if (
             resObj.status === "picker" &&
             Array.isArray(resObj.picker) &&
             resObj.picker.length > 0
           ) {
-            streamUrl = resObj.picker[0].url;
-            filename = resObj.picker[0].filename || "video.mp4";
+            available = true;
+            filename = resObj.picker[0].filename || "";
           }
 
-          if (streamUrl) {
+          if (available) {
+            if (!filename)
+              filename = config.mode === "audio" ? "audio.mp3" : "video.mp4";
+            // Stable same-origin download link. The Worker re-resolves a
+            // fresh single-use tunnel on every request, so download managers
+            // can retry / multi-thread safely.
+            const dlUrl =
+              `/api/download?url=${encodeURIComponent(targetUrl)}` +
+              `&quality=${encodeURIComponent(config.q)}` +
+              `&mode=${encodeURIComponent(config.mode)}` +
+              `&filename=${encodeURIComponent(filename)}`;
             return {
               resolution: config.label,
               ext: config.ext,
               filesize: null,
               has_audio: config.mode === "auto",
-              url: streamUrl,
+              url: dlUrl,
               filename: filename,
             };
           }
@@ -873,7 +873,7 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
       currentStreamUrl = defaultFormat.url;
       resultDownloadBtn.href = currentStreamUrl;
       resultDownloadBtn.setAttribute('download', currentFilename);
-      resultVideo.src = currentStreamUrl;
+      resultVideo.src = currentStreamUrl + "&inline=1";
 
       // Populate resolution options dropdown
       dropdownMenu.innerHTML = '';
@@ -891,7 +891,7 @@ const { platform, emoji, accentColor, tagline, description, placeholder, feature
         resultDownloadBtn.setAttribute('download', specificFilename);
         currentFilename = specificFilename;
         resultFilename.textContent = specificFilename;
-        resultVideo.src = fmt.url;
+        resultVideo.src = fmt.url + "&inline=1";
 
         resultDownloadBtn.innerHTML = `
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
