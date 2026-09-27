@@ -1098,14 +1098,13 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
   // Zero Cloudflare Worker subrequests. Zero proxy bandwidth.
   // ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 
-  // ── Cobalt instances: self-hosted first, public fallbacks ──
-  const COBALT_INSTANCES = [
-    "https://cobalt-awhs.onrender.com",
-    "https://cobaltapi.cjs.nz",
-    "https://rue-cobalt.xenon.zone",
-  ];
-
-  const COBALT_TIMEOUT_MS = 12000;
+  // ── Cobalt via same-origin Worker proxy ──
+  // POST /api/cobalt fans out to the instances with server-side failover.
+  // Downloads use stable /api/download links (Worker re-resolves a fresh
+  // single-use tunnel on every request). The browser only ever talks to
+  // this site: no CORS / region issues, and tunnel URLs never leak to
+  // download managers.
+  const COBALT_TIMEOUT_MS = 75000;
 
   const SKIP_ERROR_CODES = new Set([
     "error.api.auth.jwt.missing",
@@ -1144,14 +1143,13 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
     return errorMap[errorCode] || null;
   }
 
-  /** Call a single Cobalt instance with timeout */
+  /** Call Cobalt via the Worker proxy with timeout */
   async function callCobalt(
     targetUrl: string,
     quality: string,
     mode: string,
-    cobaltApiUrl: string,
   ): Promise<any> {
-    const endpoint = cobaltApiUrl;
+    const endpoint = "/api/cobalt";
 
     const body: any = {
       url: targetUrl,
@@ -1212,28 +1210,20 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
       clearTimeout(timeoutId);
       if (e.name === "AbortError") {
         throw new Error(
-          `Instance timed out after ${COBALT_TIMEOUT_MS / 1000}s`,
+          `Request timed out after ${COBALT_TIMEOUT_MS / 1000}s`,
         );
       }
       throw e;
     }
   }
 
-  /** Try each Cobalt instance in order until one succeeds */
+  /** One call — the Worker already fans out to instances with failover */
   async function callCobaltWithFailover(
     targetUrl: string,
     quality: string,
     mode: string,
   ): Promise<any> {
-    let lastError: any = null;
-    for (const instance of COBALT_INSTANCES) {
-      try {
-        return await callCobalt(targetUrl, quality, mode, instance);
-      } catch (e: any) {
-        lastError = e;
-      }
-    }
-    throw lastError || new Error("All Cobalt instances failed");
+    return callCobalt(targetUrl, quality, mode);
   }
 
   // ———— Quality extraction: fetch all formats in parallel ————
@@ -1257,28 +1247,38 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
             config.q,
             config.mode,
           );
-          let streamUrl = "";
+          let available = false;
           let filename = "";
 
           if (resObj.status === "redirect" || resObj.status === "tunnel") {
-            streamUrl = resObj.url;
-            filename = resObj.filename || "video.mp4";
+            available = true;
+            filename = resObj.filename || "";
           } else if (
             resObj.status === "picker" &&
             Array.isArray(resObj.picker) &&
             resObj.picker.length > 0
           ) {
-            streamUrl = resObj.picker[0].url;
-            filename = resObj.picker[0].filename || "video.mp4";
+            available = true;
+            filename = resObj.picker[0].filename || "";
           }
 
-          if (streamUrl) {
+          if (available) {
+            if (!filename)
+              filename = config.mode === "audio" ? "audio.mp3" : "video.mp4";
+            // Stable same-origin download link. The Worker re-resolves a
+            // fresh single-use tunnel on every request, so download managers
+            // can retry / multi-thread safely.
+            const dlUrl =
+              `/api/download?url=${encodeURIComponent(targetUrl)}` +
+              `&quality=${encodeURIComponent(config.q)}` +
+              `&mode=${encodeURIComponent(config.mode)}` +
+              `&filename=${encodeURIComponent(filename)}`;
             return {
               resolution: config.label,
               ext: config.ext,
               filesize: null,
               has_audio: config.mode === "auto",
-              url: streamUrl,
+              url: dlUrl,
               filename: filename,
             };
           }
@@ -1706,66 +1706,65 @@ import PlatformSwitcher from "./PlatformSwitcher.astro";
     });
   }
 
-  // Download: get a FRESH tunnel URL, then navigate directly to it.
-  // This lets the browser's native download manager stream to disk (no RAM buffering).
-  // We always re-extract because Cobalt tunnel tokens are single-use and may be expired.
-  resultDownloadBtn.addEventListener("click", async (e: Event) => {
+  // Download: navigate to the stable same-origin link. The Worker
+  // re-resolves a fresh single-use tunnel on every request and streams it
+  // with content-disposition: attachment, so the browser / download manager
+  // can retry or multi-thread safely.
+  resultDownloadBtn.addEventListener("click", (e: Event) => {
     e.preventDefault();
     if (!currentStreamUrl || currentStreamUrl === "#") return;
 
     const origHTML = resultDownloadBtn.innerHTML;
-    resultDownloadBtn.innerHTML = `
-      <svg class="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:inline-block;vertical-align:middle;margin-right:6px;">
-        <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.3)" stroke-width="2"></circle>
-        <path d="M8 2a6 6 0 0 1 6 6" stroke="white" stroke-width="2" stroke-linecap="round"></path>
-      </svg>
-      PREPARING...
-    `;
-    (resultDownloadBtn as any).style.pointerEvents = "none";
 
-    try {
-      // Determine which quality/mode the user currently has selected
-      const inputUrl = (document.getElementById("hero-input") as HTMLInputElement).value.trim();
-      const selectedRes = triggerText.textContent || "";
-      
-      // Find the matching format config for the selected resolution
-      let selectedQuality = "1080";
-      let selectedMode = "auto";
-      for (const cfg of FORMATS_CONFIG) {
-        if (selectedRes.includes(cfg.label)) {
-          selectedQuality = cfg.q;
-          selectedMode = cfg.mode;
-          break;
+    // Determine which quality/mode the user currently has selected
+    const inputUrl = (document.getElementById("hero-input") as HTMLInputElement).value.trim();
+    const selectedRes = triggerText.textContent || "";
+
+    // Find the matching format config for the selected resolution
+    let selectedQuality = "1080";
+    let selectedMode = "auto";
+    for (const cfg of FORMATS_CONFIG) {
+      if (selectedRes.includes(cfg.label)) {
+        selectedQuality = cfg.q;
+        selectedMode = cfg.mode;
+        break;
+      }
+    }
+
+    const dlUrl =
+      `/api/download?url=${encodeURIComponent(inputUrl)}` +
+      `&quality=${encodeURIComponent(selectedQuality)}` +
+      `&mode=${encodeURIComponent(selectedMode)}` +
+      `&filename=${encodeURIComponent(currentFilename || "video.mp4")}`;
+    window.location.href = dlUrl;
+
+    resultDownloadBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block;vertical-align:middle;margin-right:6px;">
+        <path d="M2 8l4 4L14 3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      DOWNLOAD STARTED
+    `;
+    setTimeout(() => {
+      resultDownloadBtn.innerHTML = origHTML;
+    }, 4000);
+  });
+
+  // Preview: load the stable link with inline disposition when opened.
+  const previewToggle = document.querySelector(".video-preview-toggle");
+  if (previewToggle) {
+    previewToggle.addEventListener("toggle", () => {
+      if (
+        (previewToggle as HTMLDetailsElement).open &&
+        currentStreamUrl &&
+        currentStreamUrl !== "#"
+      ) {
+        const previewUrl = `${currentStreamUrl}&inline=1`;
+        if (resultVideo.getAttribute("src") !== previewUrl) {
+          resultVideo.src = previewUrl;
         }
       }
-
-      // Request a fresh tunnel URL from the backend
-      const freshData = await callCobaltWithFailover(inputUrl, selectedQuality, selectedMode);
-      
-      if (freshData.url) {
-        // Navigate browser directly to the tunnel — content-disposition: attachment
-        // forces download, and the browser streams to disk natively (no RAM buffering)
-        window.location.href = freshData.url;
-
-        resultDownloadBtn.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="display:inline-block;vertical-align:middle;margin-right:6px;">
-            <path d="M2 8l4 4L14 3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          DOWNLOAD STARTED
-        `;
-      } else {
-        throw new Error("No download URL returned");
-      }
-    } catch (err: any) {
-      resultDownloadBtn.innerHTML = `DOWNLOAD FAILED — TRY AGAIN`;
-      console.error("Download error:", err);
-    } finally {
-      setTimeout(() => {
-        resultDownloadBtn.innerHTML = origHTML;
-        (resultDownloadBtn as any).style.pointerEvents = "";
-      }, 4000);
-    }
-  });
+    });
+  }
 
   // Copy URL button
   copyUrlBtn.addEventListener("click", async () => {
