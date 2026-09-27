@@ -182,7 +182,14 @@ const COBALT_INSTANCES = [
   "https://cobaltapi.cjs.nz",
   "https://rue-cobalt.xenon.zone",
 ];
-const COBALT_INSTANCE_TIMEOUT_MS = 20000;
+const COBALT_INSTANCE_TIMEOUT_MS = 15000;
+// Tunnel streaming timeouts: the tunnel fetch used to have NO timeout, so a
+// blackholed connection (TCP up, zero bytes back — as seen from some networks)
+// hung /api/download at 0 bytes forever. Now each phase has a deadline and a
+// stuck instance fails over to the next one instead of hanging the download.
+const TUNNEL_HEADERS_TIMEOUT_MS = 15000; // tunnel response headers must arrive
+const TUNNEL_FIRST_BYTE_TIMEOUT_MS = 15000; // first body byte must arrive
+const TUNNEL_IDLE_TIMEOUT_MS = 60000; // abort if the stream goes fully silent
 
 // Hosts /api/download is allowed to fetch: the Cobalt instances plus the
 // media CDNs that Cobalt "redirect" responses point to. Anything else -> 403.
@@ -327,15 +334,35 @@ function cobaltBodyFromParams(params) {
   return body;
 }
 
-/** Resolve a fresh stream URL for the given params (throws on failure). */
-async function resolveStreamUrl(params) {
-  const body = cobaltBodyFromParams(params);
-  if (!body) {
-    const err = new Error("invalid url");
-    err.statusCode = 400;
+/**
+ * Resolve a stream URL on ONE specific Cobalt instance.
+ * Throws; err.permanent === true means the video itself can't be downloaded
+ * (don't waste time trying other instances). err.cobaltData carries details.
+ */
+async function resolveStreamUrlOn(instance, body) {
+  const res = await fetchWithTimeout(
+    instance,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    },
+    COBALT_INSTANCE_TIMEOUT_MS,
+  );
+  const data = await res.json().catch(() => null);
+  if (!res.ok || !data || typeof data !== "object") {
+    throw new Error(`instance ${instance}: HTTP ${res.status}`);
+  }
+  if (data.status === "error") {
+    const code = (data.error && data.error.code) || "unknown";
+    const err = new Error(`instance ${instance}: ${code}`);
+    err.cobaltData = data;
+    if (!COBALT_RETRY_CODES.has(code)) err.permanent = true;
     throw err;
   }
-  const data = await cobaltResolve(body);
   let streamUrl = "";
   if (
     (data.status === "tunnel" || data.status === "redirect") &&
@@ -351,14 +378,144 @@ async function resolveStreamUrl(params) {
     streamUrl = data.picker[0].url;
   }
   if (!streamUrl || !isProxiableUrl(streamUrl)) {
-    const err = new Error(
-      (data && data.error && data.error.code) || "no stream url",
-    );
-    err.statusCode = 502;
+    const err = new Error(`instance ${instance}: no stream url`);
     err.cobaltData = data;
     throw err;
   }
   return streamUrl;
+}
+
+/**
+ * Fetch a stream with deadlines: headers within headersMs, first body byte
+ * within firstByteMs, and no mid-stream silence longer than idleMs.
+ * Returns { res, stream }; the stream replays bytes already read.
+ * Throws on any timeout / network error — the caller fails over to the next
+ * Cobalt instance instead of hanging the client at 0 bytes forever.
+ */
+async function fetchStreamWithTimeouts(
+  targetUrl,
+  options,
+  headersMs,
+  firstByteMs,
+  idleMs,
+) {
+  const controller = new AbortController();
+  const headersTimer = setTimeout(() => controller.abort(), headersMs);
+  let res;
+  try {
+    res = await fetch(targetUrl, { ...options, signal: controller.signal });
+  } catch (e) {
+    clearTimeout(headersTimer);
+    throw e;
+  }
+  clearTimeout(headersTimer);
+
+  if (!res.body) throw new Error("upstream returned no body");
+  const reader = res.body.getReader();
+
+  async function readWithTimeout(ms, what) {
+    let timer;
+    try {
+      return await Promise.race([
+        reader.read(),
+        new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error(what)), ms);
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  let first;
+  try {
+    first = await readWithTimeout(firstByteMs, "tunnel first byte timeout");
+  } catch (e) {
+    try {
+      controller.abort();
+    } catch {}
+    try {
+      reader.cancel();
+    } catch {}
+    throw e;
+  }
+
+  const stream = new ReadableStream({
+    start(c) {
+      if (first.done) {
+        c.close();
+        return;
+      }
+      if (first.value) c.enqueue(first.value);
+    },
+    async pull(c) {
+      try {
+        const { done, value } = await readWithTimeout(
+          idleMs,
+          "tunnel idle timeout",
+        );
+        if (done) c.close();
+        else c.enqueue(value);
+      } catch (e) {
+        try {
+          controller.abort();
+        } catch {}
+        try {
+          reader.cancel();
+        } catch {}
+        c.error(e);
+      }
+    },
+    cancel(reason) {
+      try {
+        controller.abort();
+      } catch {}
+      try {
+        reader.cancel(reason);
+      } catch {}
+    },
+  });
+  return { res, stream };
+}
+
+/** Build the final download Response from an upstream tunnel response. */
+function buildDownloadResponse(request, url, upstream, stream) {
+  const outHeaders = new Headers();
+  for (const h of [
+    "content-type",
+    "content-length",
+    "content-range",
+    "accept-ranges",
+    "etag",
+    "last-modified",
+  ]) {
+    const v = upstream.headers.get(h);
+    if (v) outHeaders.set(h, v);
+  }
+  if (!outHeaders.has("content-type"))
+    outHeaders.set("content-type", "video/mp4");
+
+  const inline = url.searchParams.get("inline") === "1";
+  const upstreamCD = upstream.headers.get("content-disposition");
+  if (upstreamCD && !inline) {
+    outHeaders.set("content-disposition", upstreamCD);
+  } else {
+    const filename =
+      (url.searchParams.get("filename") || "").trim() || "video.mp4";
+    const safe = encodeURIComponent(filename).replace(/'/g, "%27");
+    outHeaders.set(
+      "content-disposition",
+      `${inline ? "inline" : "attachment"}; filename*=UTF-8''${safe}`,
+    );
+  }
+
+  // Stream straight through — the Worker never buffers the file.
+  return withSecurityHeaders(
+    new Response(stream, {
+      status: upstream.status,
+      headers: outHeaders,
+    }),
+  );
 }
 
 /** POST /api/cobalt — proxied Cobalt API with server-side failover. */
@@ -397,6 +554,8 @@ async function handleApiCobalt(request) {
  * GET /api/download — resolve a FRESH tunnel every request, then stream it.
  * Stable link: download managers can retry / multi-thread safely because
  * each request consumes its own single-use tunnel server-side.
+ * Per-instance failover: if an instance's tunnel hangs or errors, move on to
+ * the next instance instead of hanging the client at 0 bytes.
  * ?url= &quality= &mode= &filename= &inline=1
  */
 async function handleApiDownload(request, url) {
@@ -407,76 +566,56 @@ async function handleApiDownload(request, url) {
     );
   }
 
-  let streamUrl;
-  try {
-    streamUrl = await resolveStreamUrl(url.searchParams);
-  } catch (e) {
-    const code =
-      (e && e.cobaltData && e.cobaltData.error && e.cobaltData.error.code) ||
-      "error.api.fetch.fail";
+  const body = cobaltBodyFromParams(url.searchParams);
+  if (!body) {
     return jsonResponse(
-      { status: "error", error: { code } },
-      e && e.statusCode ? e.statusCode : 502,
+      { status: "error", error: { code: "error.api.link.unsupported" } },
+      400,
     );
   }
 
   const fwdHeaders = {};
   const range = request.headers.get("range");
   if (range) fwdHeaders["range"] = range;
+  const isHead = request.method === "HEAD";
 
-  let upstream;
-  try {
-    upstream = await fetch(streamUrl, {
-      method: request.method === "HEAD" ? "HEAD" : "GET",
-      headers: fwdHeaders,
-    });
-  } catch (e) {
-    return withSecurityHeaders(
-      new Response("Upstream fetch failed.", { status: 502 }),
-    );
-  }
-  if (!upstream.ok && upstream.status !== 206) {
-    return withSecurityHeaders(
-      new Response("Upstream error.", { status: 502 }),
-    );
-  }
-
-  const outHeaders = new Headers();
-  for (const h of [
-    "content-type",
-    "content-length",
-    "content-range",
-    "accept-ranges",
-    "etag",
-    "last-modified",
-  ]) {
-    const v = upstream.headers.get(h);
-    if (v) outHeaders.set(h, v);
-  }
-  if (!outHeaders.has("content-type"))
-    outHeaders.set("content-type", "video/mp4");
-
-  const inline = url.searchParams.get("inline") === "1";
-  const upstreamCD = upstream.headers.get("content-disposition");
-  if (upstreamCD && !inline) {
-    outHeaders.set("content-disposition", upstreamCD);
-  } else {
-    const filename =
-      (url.searchParams.get("filename") || "").trim() || "video.mp4";
-    const safe = encodeURIComponent(filename).replace(/'/g, "%27");
-    outHeaders.set(
-      "content-disposition",
-      `${inline ? "inline" : "attachment"}; filename*=UTF-8''${safe}`,
-    );
+  let lastCobaltData = null;
+  for (const instance of COBALT_INSTANCES) {
+    let streamUrl;
+    try {
+      streamUrl = await resolveStreamUrlOn(instance, body);
+    } catch (e) {
+      if (e.cobaltData) lastCobaltData = e.cobaltData;
+      if (e.permanent) break; // video-level error — fail fast, don't try others
+      continue; // instance-level failure — try the next instance
+    }
+    try {
+      const { res: upstream, stream } = await fetchStreamWithTimeouts(
+        streamUrl,
+        { method: isHead ? "HEAD" : "GET", headers: fwdHeaders },
+        TUNNEL_HEADERS_TIMEOUT_MS,
+        TUNNEL_FIRST_BYTE_TIMEOUT_MS,
+        TUNNEL_IDLE_TIMEOUT_MS,
+      );
+      if (!upstream.ok && upstream.status !== 206) {
+        try {
+          await stream.cancel();
+        } catch {}
+        continue; // bad tunnel response — try the next instance
+      }
+      return buildDownloadResponse(request, url, upstream, stream);
+    } catch (e) {
+      // timeout / network error on this instance's tunnel — try the next one
+      continue;
+    }
   }
 
-  // Stream straight through — the Worker never buffers the file.
-  return withSecurityHeaders(
-    new Response(upstream.body, {
-      status: upstream.status,
-      headers: outHeaders,
-    }),
-  );
+  const code =
+    (lastCobaltData &&
+      lastCobaltData.error &&
+      lastCobaltData.error.code) ||
+    "error.api.fetch.fail";
+  return jsonResponse({ status: "error", error: { code } }, 502);
 }
 
 /**
