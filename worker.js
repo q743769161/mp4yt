@@ -479,6 +479,48 @@ async function handleApiDownload(request, url) {
   );
 }
 
+/**
+ * GET /api/test-stream — diagnostic: synthetic download stream.
+ * ?mb=5&mode=fixed   -> 5MB with Content-Length
+ * ?mb=5&mode=chunked -> 5MB chunked (like real /api/download responses)
+ */
+async function handleApiTestStream(request, url) {
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (hitRateLimit(ip)) {
+    return withSecurityHeaders(
+      new Response("Rate limited, try again later.", { status: 429 }),
+    );
+  }
+  const mb = Math.min(
+    Math.max(parseInt(url.searchParams.get("mb") || "5", 10) || 5, 1),
+    20,
+  );
+  const mode = url.searchParams.get("mode") === "chunked" ? "chunked" : "fixed";
+  const total = mb * 1024 * 1024;
+  const chunk = new Uint8Array(64 * 1024);
+  for (let i = 0; i < chunk.length; i++) chunk[i] = (i * 31 + 7) & 0xff;
+  let sent = 0;
+  const stream = new ReadableStream({
+    pull(controller) {
+      if (sent >= total) {
+        controller.close();
+        return;
+      }
+      const n = Math.min(chunk.length, total - sent);
+      controller.enqueue(chunk.slice(0, n));
+      sent += n;
+    },
+  });
+  const headers = new Headers();
+  headers.set("Content-Type", "video/mp4");
+  headers.set(
+    "Content-Disposition",
+    `attachment; filename="test-${mb}mb-${mode}.mp4"`,
+  );
+  if (mode === "fixed") headers.set("Content-Length", String(total));
+  return withSecurityHeaders(new Response(stream, { headers }));
+}
+
 // ── Main fetch handler ──────────────────────────────────────
 // Note: Cobalt API + downloads go through the same-origin proxy above
 // (POST /api/cobalt, GET /api/download); the browser never calls Cobalt
@@ -497,6 +539,9 @@ export default {
       (request.method === "GET" || request.method === "HEAD")
     ) {
       return handleApiDownload(request, url);
+    }
+    if (pathname === "/api/test-stream" && request.method === "GET") {
+      return handleApiTestStream(request, url);
     }
 
     // 1. /watch — SEO handler (zero subrequests)
